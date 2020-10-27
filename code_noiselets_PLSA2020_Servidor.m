@@ -53,7 +53,7 @@ fprintf('AbriendoImagen\n')
 fprintf('%s\n',ListIMGALL(Lo).name) 
     ImTest = imread([FolderIMG,ListIMGALL(Lo).name]);
     fprintf('Mejorando Imagen\n') 
-    [~,ImEnhance] = MascaraDeNoiseletsPLSA(ImTest,Scales,WinPlsa,K_clusters);
+    [ImEnhance,~] = MascaraDeNoiseletsPLSA(ImTest,Scales,WinPlsa,K_clusters);
     fprintf('Sacando Mascara\n') 
     MaskEvaluate = getWatershedMask(ImEnhance);
     imwrite(ImEnhance,[FolderImgsSinRuido,ListIMGALL(Lo).name(1:end-4),'.png' ]);
