@@ -12,7 +12,7 @@ addpath('nuclei_seg/staining_normalization/')
 addpath('FNT')
 addpath('PLSA_TEM_EM/')
 addpath('nuclei_seg')
-
+addpath('nuclei_seg/veta_watershed/')
 
 %%% Dataset Dir %%%
 FolderIMG = '/mnt/md0/Histopathology/Datasets/MoNuSeg/Tissue_images/';
