@@ -2,19 +2,23 @@ addpath(genpath('./veta_watershed'));
 addpath(genpath('./GeneralLoG'));
 addpath(genpath('./staining_normalization'));
 
-folder='C:\Users\German\Documents\Case\lymp_identification_data\test\29_38_ln+\';
-image='29_38.bmp';
+%folder='C:\Users\German\Documents\Case\lymp_wsi_data\test\';
+%image='29_38.png';
+
+folder='C:\Users\German\Desktop\123\';
+image='51_53_1_lym.png';
 % IMData4SymmetricVoting_1={'8913.tif','8914.tif'};
 % IMData4SymmetricVoting_1={'29_38.png'};
 
 IMData4SymmetricVoting_1={[folder image]};
 
 for i=1:length(IMData4SymmetricVoting_1)
-    curIMName=IMData4SymmetricVoting_1{i};
-    curIM=imread(curIMName);
-    curIMsize=size(curIM);
-    [curIM_norm] = normalizeStaining(curIM);
-    curIM_normRed=curIM_norm(:,:,1);
+%     curIMName=IMData4SymmetricVoting_1{i};
+     curIM=imread(curIMName);
+%     curIMsize=size(curIM);
+%     [curIM_norm] = normalizeStaining(curIM);
+%     curIM_normRed=curIM_norm(:,:,1);
+curIM_normRed=curIM;
 
     %% using multi resolution watershed, speed up veta
     
@@ -51,8 +55,8 @@ for i=1:length(IMData4SymmetricVoting_1)
     [Nmask,cs,rs,A3]=XNucleiSeg_GL_Thresholding(R,ac);      %% thresholding based binarization
 %     show(Nmask);
     %%% gLoG seeds detection
-    largeSigma=8;
-    smallSigma=6; % Sigma value
+    largeSigma=16;
+    smallSigma=14; % Sigma value
     ns=XNucleiCenD_Clustering(R,Nmask,largeSigma,smallSigma);  %% To detect nuclei clumps
 %     53 s
     figure(1),imshow(I);
@@ -61,10 +65,10 @@ for i=1:length(IMData4SymmetricVoting_1)
 %     hold on,plot(cs,rs,'g*');
     
     %%% marker-controlled watershed segmentation
-    ind=sub2ind(size(R),ns(1,:),ns(2,:));
-    bs4=zeros(size(R));
-    bs4(ind)=1;
-    [bnf,blm]=XWaterShed(Nmask,bs4);
+%     ind=sub2ind(size(R),ns(1,:),ns(2,:));
+%     bs4=zeros(size(R));
+%     bs4(ind)=1;
+%     [bnf,blm]=XWaterShed(Nmask,bs4);
     
     %%% show segmentations
 %     bb=bwperim(Nmask);  % for debugging finial segmentations

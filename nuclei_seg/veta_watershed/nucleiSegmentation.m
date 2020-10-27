@@ -160,6 +160,10 @@ B2 = strel('disk', floor(n/2), 0);
 % stage 1 (opening by reconstruction): remove bright unconnected objects
 % smaller than the structuring element
 marker1 = imerode(I, B);
+%added byr Ricardo M. May could help
+%I = adapthisteq(I);
+%fprintf('Linea añadida de equalizacion\n')
+%%
 stage1 = imreconstruct(marker1, I);
 
 t = imcomplement(stage1);

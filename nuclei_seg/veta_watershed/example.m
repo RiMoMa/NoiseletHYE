@@ -1,9 +1,9 @@
 %% segment the nuclei
-io = imread('0682_A_1_3_.tif');
+io = imread('/media/ricardo/My Passport/copia_jome/home/ricardo/PycharmProjects/BoFPyPythonCA/W_NucleiSegmentation-Python-master/A04_03Da.tiff');
 
-I = imread('0682_A_1_3_.tif');
+I = imread('/media/ricardo/My Passport/copia_jome/home/ricardo/PycharmProjects/BoFPyPythonCA/W_NucleiSegmentation-Python-master/A04_03Da.tiff');
 
-if ~exist('0682_A_1_3_.mat', 'file'); %took out ~. code wasn't running image through nucleiSegmentation since the .mat file already existed
+if ~exist('068gg2_A_1_3_.mat', 'file'); %took out ~. code wasn't running image through nucleiSegmentation since the .mat file already existed
     %but .mat file already contains information about segmentation. revise
     %code to create .mat file if it doesn't exist
     [c1] = color_deconvolution(io, 'HE');
@@ -11,11 +11,11 @@ if ~exist('0682_A_1_3_.mat', 'file'); %took out ~. code wasn't running image thr
     tic; [nuclei properties] = nucleiSegmentation(I(:,:,1)); toc;
     
     
-    save('0682_A_1_3_.mat', 'nuclei', 'properties');
+    save('0682_Agg_1_3_.mat', 'nuclei', 'properties');
     
 else
     
-    load('0682_A_1_3_.mat');
+    load('0682_ggA_1_3_.mat');
     
 end
 

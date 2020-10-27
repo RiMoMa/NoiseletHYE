@@ -1,4 +1,4 @@
-function [Inorm H E] = normalizeStaining(I, Io, beta, alpha, HERef, maxCRef)
+function [Inorm H E HE maxC] = normalizeStaining(I,ImO, Io, beta, alpha, HERef, maxCRef)
 % normalizeStaining: Normalize the staining appearance of images
 % originating from H&E stained sections.
 %
@@ -78,8 +78,19 @@ OD = -log((I+1)/Io);
 % remove transparent pixels
 ODhat = OD(~any(OD < beta, 2), :);
 
+if isempty(ODhat)
+   Inorm=255*ones(w,h,3);
+   return;
+end
+
 % calculate eigenvectors
 [V, ~] = eig(cov(ODhat));
+
+[~,c]=size(V);
+if c<3
+    Inorm=255*ones(w,h,3);
+    return;
+end
 
 % project on the plane spanned by the eigenvectors corresponding to the two
 % largest eigenvalues
@@ -103,6 +114,15 @@ else
 end
 
 % rows correspond to channels (RGB), columns to OD values
+
+h = size(ImO,1);
+w = size(ImO,2);
+
+ImO = double(ImO);
+
+ImO = reshape(ImO, [], 3);
+
+OD = -log((ImO+1)/Io);
 Y = reshape(OD, [], 3)';
 
 % determine concentrations of the individual stains

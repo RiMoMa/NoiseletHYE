@@ -68,11 +68,21 @@ for j=1:n2
     if y<1
         y=1;
     end
-    tr=R(y:y+h,x:x+w);
+    
+    rsiz=size(R);    
+    limX=x+w;
+    if limX > rsiz(1)
+        limX=rsiz(1);
+    end
+    limY=y+h;
+    if limY > rsiz(2)
+        limY=rsiz(2);
+    end
+    tr=R(y:limY,x:limX);
 
    
     rr=im2bw(tr,graythresh(tr));
-    C_mask2(y:y+h,x:x+w)=C_mask1(y:y+h,x:x+w)&(~rr);
+    C_mask2(y:limY,x:limX)=C_mask1(y:limY,x:limX)&(~rr);
 %      hold on,
 %      plot(stats2(j).BoundingBox(1),stats2(j).BoundingBox(2),'r*');
 %      rectangle('Position',[stats2(j).BoundingBox(1),stats2(j).BoundingBox(2),stats2(j).BoundingBox(3),stats2(j).BoundingBox(4)],...
@@ -90,8 +100,13 @@ ind3=find(s3>0.95);
 A3=ismember(label3,ind3);
 c4=regionprops(A3,'centroid');
 centroids4=cat(1,c4.Centroid);
-cs4=centroids4(:,1);
-rs4=centroids4(:,2);
+if length(centroids4)>0
+    cs4=centroids4(:,1);
+    rs4=centroids4(:,2);
+else
+    cs4=[];
+    rs4=[];
+end
 C_mask3=C_mask2-A3;
 
 end

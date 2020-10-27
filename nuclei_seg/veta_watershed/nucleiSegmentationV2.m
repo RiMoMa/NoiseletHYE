@@ -37,12 +37,15 @@ p = getParameters(varargin{:});
 % make sure the input image is in double format
 I = double(I);
 
-nuclei = cell(1, length(p.scales));
-properties = cell(1, length(p.scales));
-keep =[]; accepted = [];
+numScales=length(p.scales);
+nuclei = cell(1, numScales);
+properties = cell(1, numScales);
+keep =1:length(p.scales); %accepted = [];
+logical_keep = ones(1,length(p.scales));
 
-%if isempty(gcp('nocreate')), pinfo = parcluster('local'); numpools = pinfo.NumWorkers; parpool(numpools-1); end
-for n = 1:length(p.scales)
+
+% You can use parfor here to speed
+parfor n = 1:length(p.scales)
     
     disp(['Processing at scale ' num2str(p.scales(n)) ' pixels.']);
     
@@ -58,10 +61,19 @@ for n = 1:length(p.scales)
     
     LRegionalMinima = markerControlledWatershedRegionalMinima(Ip, p.scales(n), p.noBackgroundMarkers);
     
+    
     [ERegionalMinima LRegionalMinima] = bwboundaries(LRegionalMinima, 'noholes');
     
     PRegionalMinima = regionProperties(I, LRegionalMinima);
     
+    %%% Test of Regions under Analasys %Comment if you need
+    %im = imread('/media/ricardo/My Passport/internship/ATYPIA_classes_norm/clase_3/A04_00Db.png');
+    %figure;imshow(labeloverlay(im,uint8(boundarymask(LRegionalMinima>0))*1+uint8(boundarymask(LRadialSymmetry>0))*2));
+    %title(['scale ' num2str(p.scales(n)) ' pixels'])
+    %%%% End Test
+    
+    
+
     try
         P = cat(1, PRadialSymmetry, PRegionalMinima);
         E = cat(1, ERadialSymmetry, ERegionalMinima);
@@ -87,7 +99,6 @@ for n = 1:length(p.scales)
     end
     
     
-    if exist('P','var')
         if ~isempty(P)
             % remove regions with area that is too small or too large for current
             % scale
@@ -100,13 +111,13 @@ for n = 1:length(p.scales)
             properties{n} = P(accepted);
         else
             fprintf('\nP not found for scale %i from scales [%i %i] ', p.scales(n), p.scales(1), p.scales(end))
+            accepted = [];
         end
-    else
-        fprintf('\nP not found for scale %i from scales [%i %i] ', p.scales(n), p.scales(1), p.scales(end))
-    end
+
     
     if ~isempty(accepted)
-        keep = [keep n];
+        %keep = [keep n];
+        logical_keep(n) = 1;
     end
     
 end
@@ -128,11 +139,14 @@ end
 
 % nuclei{keep};
 % properties{keep};
-
+keep = keep(logical(logical_keep));
 nuclei = cat(1, nuclei{keep});
 properties = cat(1, properties{keep});
 %% changed by George Lee - CCIPD, CWRU - 1/18/2015 ^^^
 
+if length(nuclei)==0
+    return;
+end
 %
 % nuclei = cat(1, nuclei{:});
 % properties = cat(1, properties{:});
@@ -654,8 +668,8 @@ ip.addOptional('h', 0.6, @(x)checkNumericBounds(x, 0));
 ip.addOptional('noBackgroundMarkers', false, @islogical);
 
 % properties ranges for rule based rejection:
-ranges = {'Solidity', [0.875 1],...
-    'MassDisplacement', [0 0.08],...
+ranges = {'Solidity', [0.9 1],...
+    'MassDisplacement', [0 0.07],...
     'BoundarySaliency', [20 255]
     };
 
