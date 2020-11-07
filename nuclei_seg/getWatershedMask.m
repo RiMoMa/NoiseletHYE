@@ -42,7 +42,7 @@ if normalize
     I=I(:,:,1);
 end
 
-p.scales=[8:2:14];
+p.scales=[2:2:14];
 [nuclei, ~] = nucleiSegmentationV2(I,p);
 M=zeros(w,h);
 
