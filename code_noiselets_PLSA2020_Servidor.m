@@ -20,7 +20,7 @@ FolderXML = '/mnt/md0/Histopathology/Datasets/MoNuSeg/Annotations/';
 
 
 %% Folder Results
-FolderResults = '/mnt/md0/ricardo/NoiseletProject/Results/';
+FolderResults = '/mnt/md0/ricardo/NoiseletProject/Results2/';
 mkdir(FolderResults)
 FolderImgsMethod = [FolderResults,'ImgsMethodRed2/'];
 mkdir(FolderImgsMethod);
@@ -35,7 +35,7 @@ mkdir(FolderImgsGroundTruth);
 
 
 %%%%%%%OPTIONS
-load([FolderResults,'MatrizExperimentos.mat'])
+load([FolderResults,'MatrizExperimentos2.mat'])
 for Expe = 1:length(ExperimentosNoiselets)
 Scales = [ExperimentosNoiselets{Expe,2},ExperimentosNoiselets{Expe,3}];
 WinPlsa = ExperimentosNoiselets{Expe,4};
