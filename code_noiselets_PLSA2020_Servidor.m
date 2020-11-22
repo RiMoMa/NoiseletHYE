@@ -20,7 +20,7 @@ FolderXML = '/mnt/md0/Histopathology/Datasets/MoNuSeg/Annotations/';
 
 
 %% Folder Results
-FolderResults = '/mnt/md0/ricardo/NoiseletProject/Results2es/';
+FolderResults = '/mnt/md0/ricardo/NoiseletProject/Results3/';
 mkdir(FolderResults)
 FolderImgsMethod = [FolderResults,'ImgsMethodRed2/'];
 mkdir(FolderImgsMethod);
