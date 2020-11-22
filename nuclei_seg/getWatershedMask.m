@@ -39,7 +39,10 @@ if normalize
  %   I=uint8(I);
     
     
-    I=I(:,:,1);
+    %I=I(:,:,1);
+    [~,normI,~] = normalizeStaining(I,220,0.15);
+%normRed=normI(:,:,1);
+    I = rgb2gray(normI);
 end
 
 p.scales=[4:2:14];
