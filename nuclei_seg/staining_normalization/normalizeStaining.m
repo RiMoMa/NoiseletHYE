@@ -1,4 +1,5 @@
-function [Inorm H E HE maxC] = normalizeStaining(I,ImO, Io, beta, alpha, HERef, maxCRef)
+function [Inorm H E] = normalizeStaining(I,ImO, Io, beta, alpha, HERef, maxCRef)
+% HE maxC
 % normalizeStaining: Normalize the staining appearance of images
 % originating from H&E stained sections.
 %
