@@ -1,5 +1,5 @@
 function [Inorm H E] = normalizeStaining(I,ImO, Io, beta, alpha, HERef, maxCRef)
-% HE maxC
+% HE maxC  [Inorm,H,E] = normalizeStaining(im,im,220,0.06);
 % normalizeStaining: Normalize the staining appearance of images
 % originating from H&E stained sections.
 %
