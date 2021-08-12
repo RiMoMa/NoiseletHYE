@@ -9,6 +9,7 @@
 
 addpath('/home/ricardo/Documents/Doctorado/SYNC/all_codes/CodesInternship/GITP/')
 addpath('/home/ricardo/Documents/Doctorado/SYNC/all_codes/CodesInternship/librerias/nuclei_seg/staining_normalization/')
+addpath('/home/ricardo/Documents/Doctorado/SYNC/all_codes/CodesInternship/librerias/nuclei_seg/veta_watershed')
 addpath('/home/ricardo/Documents/Doctorado/SYNC/all_codes/CodesInternship/GITP/FNT')
 addpath('/home/ricardo/Documents/Doctorado/SYNC/all_codes/CodesInternship/GITP/PLSA_TEM_EM/')
 addpath('/home/ricardo/Documents/Doctorado/SYNC/all_codes/CodesInternship/librerias/nuclei_seg')
