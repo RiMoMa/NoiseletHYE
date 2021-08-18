@@ -20,7 +20,7 @@ FolderXML = '/mnt/md0/Histopathology/Datasets/MoNuSeg/Annotations/';
 
 
 %% Folder Results
-FolderResults = '/mnt/md0/ricardo/NoiseletProject/Results3/';
+FolderResults = '//mnt/md0/ricardo/NoiseletProject/ResultsMonuseg2021/';
 mkdir(FolderResults)
 FolderImgsMethod = [FolderResults,'ImgsMethodRed2/'];
 mkdir(FolderImgsMethod);
@@ -35,12 +35,12 @@ mkdir(FolderImgsGroundTruth);
 
 
 %%%%%%%OPTIONS
-load([FolderResults,'MatrizExperimentos2.mat'])%% archivo que contiene los parametros experimentales
+load([FolderResults,'MatrizExperimentos3.mat'])%% archivo que contiene los parametros experimentales
 for Expe = 1:length(ExperimentosNoiselets)
-Scales = [ExperimentosNoiselets{Expe,2},ExperimentosNoiselets{Expe,3}];
-WinPlsa = ExperimentosNoiselets{Expe,4};
+Scales = [ExperimentosNoiselets{Expe,2}];
+WinPlsa = ExperimentosNoiselets{Expe,3};
 ResultsName = ExperimentosNoiselets{Expe,1}{1};
-K_clusters =ExperimentosNoiselets{Expe,5};
+K_clusters =ExperimentosNoiselets{Expe,4};
 fprintf('Testing: %s \n',ResultsName)
 %%%%%%%Training
 ListIMGALL = dir(strcat(FolderIMG,'*.tif'));
