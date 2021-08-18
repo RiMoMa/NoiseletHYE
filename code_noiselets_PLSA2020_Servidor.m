@@ -7,7 +7,7 @@
 
 
 
-addpath('GITP/')
+addpath('/mnt/md0/ricardo/CodesInternship/GITP/')
 addpath('nuclei_seg/staining_normalization/')
 addpath('FNT')
 addpath('PLSA_TEM_EM/')
