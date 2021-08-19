@@ -45,7 +45,7 @@ logical_keep = ones(1,length(p.scales));
 
 
 % You can use parfor here to speed
-parfor n = 1:length(p.scales)
+for n = 1:length(p.scales)
     
     disp(['Processing at scale ' num2str(p.scales(n)) ' pixels.']);
     
