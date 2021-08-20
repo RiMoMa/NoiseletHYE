@@ -44,11 +44,11 @@ K_clusters =ExperimentosNoiselets{Expe,4};
 fprintf('Testing: %s \n',ResultsName)
 %%%%%%%Training
 ListIMGALL = dir(strcat(FolderIMG,'*.tif'));
-Resultados = {};
-ResultadosSumado = {};
-ResultadosOriginal= {};
+Resultados = cell(length(ListIMGALL),5);
+ResultadosSumado =cell(length(ListIMGALL),5);
+ResultadosOriginal=cell(length(ListIMGALL),5);
 %%leave one out
-for Lo = 1:length(ListIMGALL)
+parfor Lo = 1:length(ListIMGALL)
 fprintf('AbriendoImagen\n') 
 fprintf('%s\n',ListIMGALL(Lo).name) 
     ImTest = imread([FolderIMG,ListIMGALL(Lo).name]);
