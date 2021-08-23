@@ -67,7 +67,7 @@ Resultados{Lo,1} = ListIMGALL(Lo).name(1:end-4);
 Resultados{Lo,2} = 0;
 Resultados{Lo,3} = DiceCoeff;
 Resultados{Lo,4} = JAC;
-aji3 = Aggregated_Jaccard_Index_v1_0(ImManualMask>0,bwlabel(MaskEvaluate));
+aji3 = Aggregated_Jaccard_Index_v1_0(ImManualMask,bwlabel(MaskEvaluate));
 Resultados{Lo,5} = aji3;
 
 save([FolderResults,'Results_',ResultsName,'_Method.mat'],'Resultados')    
@@ -85,7 +85,7 @@ ResultadosOriginal{Lo,1} = ListIMGALL(Lo).name(1:end-4);
 ResultadosOriginal{Lo,2} = 0;
 ResultadosOriginal{Lo,3} = DiceCoeff;
 ResultadosOriginal{Lo,4} = JAC;
-aji1 = Aggregated_Jaccard_Index_v1_0(ImManualMask>0,bwlabel(MaskOriginal));
+aji1 = Aggregated_Jaccard_Index_v1_0(ImManualMask,bwlabel(MaskOriginal));
 ResultadosOriginal{Lo,5} = aji1;
 save([FolderResults,'Results_',ResultsName,'Original.mat'],'ResultadosOriginal')    
 ImBorde = imoverlay(ImTest,boundarymask(MaskOriginal));
