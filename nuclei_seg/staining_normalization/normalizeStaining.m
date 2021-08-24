@@ -81,6 +81,8 @@ ODhat = OD(~any(OD < beta, 2), :);
 
 if isempty(ODhat)
    Inorm=255*ones(w,h,3);
+   H = 255*ones(w,h,3);
+   E =255*ones(w,h,3);
    return;
 end
 
