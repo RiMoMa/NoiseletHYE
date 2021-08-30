@@ -36,7 +36,7 @@ mkdir(FolderImgsGroundTruth);
 
 %%%%%%%OPTIONS
 load([FolderResults,'MatrizExperimentos3.mat'])%% archivo que contiene los parametros experimentales
-for Expe = 101:length(ExperimentosNoiselets)
+for Expe = 1:25%length(ExperimentosNoiselets)
 Scales = [ExperimentosNoiselets{Expe,2}];
 WinPlsa = ExperimentosNoiselets{Expe,3};
 ResultsName = ExperimentosNoiselets{Expe,1}{1};
@@ -48,7 +48,7 @@ Resultados = cell(length(ListIMGALL),5);
 ResultadosSumado =cell(length(ListIMGALL),5);
 ResultadosOriginal=cell(length(ListIMGALL),5);
 %%leave one out
-for Lo = 1:length(ListIMGALL)
+for Lo = 101:length(ListIMGALL)
 fprintf('AbriendoImagen\n') 
 fprintf('%s\n',ListIMGALL(Lo).name) 
     ImTest = imread([FolderIMG,ListIMGALL(Lo).name]);
@@ -75,7 +75,7 @@ Resultados{Lo,4} = JAC;
 %aji3 = Aggregated_Jaccard_Index_v1_0(ImManualMask,bwlabel(MaskEvaluate));
 %Resultados{Lo,5} = aji3;
 Resultados{Lo,5} = 0;
-
+aji3 =0
 save([FolderResults,'Results_',ResultsName,'_Method.mat'],'Resultados')    
 ImBorde = imoverlay(ImTest,boundarymask(MaskEvaluate));
 imwrite(ImBorde,[FolderImgsMethod,ListIMGALL(Lo).name(1:end-4),'.png' ]);
@@ -93,6 +93,7 @@ ResultadosOriginal{Lo,3} = DiceCoeff;
 ResultadosOriginal{Lo,4} = JAC;
 %aji1 = Aggregated_Jaccard_Index_v1_0(ImManualMask,bwlabel(MaskOriginal));
 %ResultadosOriginal{Lo,5} = aji1;
+aji1 =0;
 ResultadosOriginal{Lo,5} = 0;
 save([FolderResults,'Results_',ResultsName,'Original.mat'],'ResultadosOriginal')    
 ImBorde = imoverlay(ImTest,boundarymask(MaskOriginal));
@@ -110,7 +111,7 @@ ResultadosSumado{Lo,4} = JAC;
 %aji2 = Aggregated_Jaccard_Index_v1_0(ImManualMask,bwlabel(or(MaskOriginal,MaskEvaluate)));
 %ResultadosSumado{Lo,5} = aji2;
 ResultadosSumado{Lo,5} = 0;
-
+aji2 =0;
 
 save([FolderResults,'Results_',ResultsName,'Sumados.mat'],'ResultadosSumado')    
 ImBorde = imoverlay(ImTest,boundarymask(or(MaskOriginal,MaskEvaluate)));
@@ -136,7 +137,7 @@ mkdir(FolderImgsEmpeoran);
 Mejoraron = {};
 empeoraron = {};
 
-CompararAJI = [[ResultadosOriginal{:,5}];[ResultadosSumado{:,5}]];
+CompararAJI = [[ResultadosOriginal{:,3}];[ResultadosSumado{:,3}]];
 indexMejoraron = CompararAJI(1,:)<CompararAJI(2,:);
 
 for id = 1:length(indexMejoraron)
@@ -158,12 +159,12 @@ end
 
 CompararAJI={};
 CompararAJI(:,1) = ResultadosSumado(:,1);
-CompararAJI(:,2) = ResultadosOriginal(:,5);
+CompararAJI(:,2) = ResultadosOriginal(:,3);
 CompararAJI(:,3) = num2cell([double(indexMejoraron)]);
-CompararAJI(:,4) = ResultadosSumado(:,5);
-CompararAJI(:,5) = num2cell([ResultadosOriginal{:,5}]-[ResultadosSumado{:,5}]);%diferencias
+CompararAJI(:,4) = ResultadosSumado(:,3);
+CompararAJI(:,5) = num2cell([ResultadosOriginal{:,3}]-[ResultadosSumado{:,3}]);%diferencias
 
-[d,idMaxDiff] = max([CompararAJI{:,5}]);
+[d,idMaxDiff] = max([CompararAJI{:,3}]);
 
 
 
