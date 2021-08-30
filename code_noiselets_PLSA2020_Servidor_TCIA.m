@@ -54,7 +54,12 @@ fprintf('%s\n',ListIMGALL(Lo).name)
     ImTest = imread([FolderIMG,ListIMGALL(Lo).name]);
     ImManualMask = imread([FolderIMG,ListIMGALL(Lo).name(1:end-8),'labeled_mask_corrected.png']);
     fprintf('Mejorando Imagen\n') 
+    try
     [ImEnhance,~] = MascaraDeNoiseletsPLSA(ImTest,Scales,WinPlsa,K_clusters);
+    catch
+        ImEnhance = ImTest;
+        fprintf('No se pudo encontrar señal\n')
+    end
     fprintf('Sacando Mascara\n') 
     MaskEvaluate = getWatershedMask(ImEnhance);
     imwrite(ImEnhance,[FolderImgsSinRuido,ListIMGALL(Lo).name(1:end-4),'.png' ]);
