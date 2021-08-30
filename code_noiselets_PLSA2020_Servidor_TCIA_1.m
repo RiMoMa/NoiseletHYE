@@ -48,7 +48,7 @@ Resultados = cell(length(ListIMGALL),5);
 ResultadosSumado =cell(length(ListIMGALL),5);
 ResultadosOriginal=cell(length(ListIMGALL),5);
 %%leave one out
-for Lo = 26:50%length(ListIMGALL)
+for Lo = 1:length(ListIMGALL)
 fprintf('AbriendoImagen\n') 
 fprintf('%s\n',ListIMGALL(Lo).name) 
     ImTest = imread([FolderIMG,ListIMGALL(Lo).name]);

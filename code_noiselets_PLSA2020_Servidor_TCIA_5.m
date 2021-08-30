@@ -36,7 +36,7 @@ mkdir(FolderImgsGroundTruth);
 
 %%%%%%%OPTIONS
 load([FolderResults,'MatrizExperimentos3.mat'])%% archivo que contiene los parametros experimentales
-for Expe = 1:25%length(ExperimentosNoiselets)
+for Expe = 101:length(ExperimentosNoiselets)
 Scales = [ExperimentosNoiselets{Expe,2}];
 WinPlsa = ExperimentosNoiselets{Expe,3};
 ResultsName = ExperimentosNoiselets{Expe,1}{1};
@@ -48,7 +48,7 @@ Resultados = cell(length(ListIMGALL),5);
 ResultadosSumado =cell(length(ListIMGALL),5);
 ResultadosOriginal=cell(length(ListIMGALL),5);
 %%leave one out
-for Lo = 101:length(ListIMGALL)
+for Lo = 1:length(ListIMGALL)
 fprintf('AbriendoImagen\n') 
 fprintf('%s\n',ListIMGALL(Lo).name) 
     ImTest = imread([FolderIMG,ListIMGALL(Lo).name]);
