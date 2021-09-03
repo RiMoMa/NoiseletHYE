@@ -36,7 +36,7 @@ mkdir(FolderImgsGroundTruth);
 
 %%%%%%%OPTIONS
 load([FolderResults,'MatrizExperimentos3.mat'])%% archivo que contiene los parametros experimentales
-for Expe = 1:length(ExperimentosNoiselets)
+for Expe = 97:length(ExperimentosNoiselets)
 Scales = [ExperimentosNoiselets{Expe,2}];
 WinPlsa = ExperimentosNoiselets{Expe,3};
 ResultsName = ExperimentosNoiselets{Expe,1}{1};
