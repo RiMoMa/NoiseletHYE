@@ -66,7 +66,8 @@ Resultados{Lo,1} = ListIMGALL(Lo).name(1:end-4);
 Resultados{Lo,2} = 0;
 Resultados{Lo,3} = DiceCoeff;
 Resultados{Lo,4} = JAC;
-aji3 = Aggregated_Jaccard_Index_v1_0(binary_maskTest,bwlabel(MaskEvaluate));
+%aji3 = Aggregated_Jaccard_Index_v1_0(binary_maskTest,bwlabel(MaskEvaluate));
+aji3=0;
 Resultados{Lo,5} = aji3;
 
 save([FolderResults,'Results_',ResultsName,'_Method.mat'],'Resultados')    
@@ -84,7 +85,8 @@ ResultadosOriginal{Lo,1} = ListIMGALL(Lo).name(1:end-4);
 ResultadosOriginal{Lo,2} = 0;
 ResultadosOriginal{Lo,3} = DiceCoeff;
 ResultadosOriginal{Lo,4} = JAC;
-aji1 = Aggregated_Jaccard_Index_v1_0(binary_maskTest,bwlabel(MaskOriginal));
+%aji1 = Aggregated_Jaccard_Index_v1_0(binary_maskTest,bwlabel(MaskOriginal));
+aji1=0;
 ResultadosOriginal{Lo,5} = aji1;
 save([FolderResults,'Results_',ResultsName,'Original.mat'],'ResultadosOriginal')    
 ImBorde = imoverlay(ImTest,boundarymask(MaskOriginal));
@@ -99,7 +101,8 @@ ResultadosSumado{Lo,1} = ListIMGALL(Lo).name(1:end-4);
 ResultadosSumado{Lo,2} = 0;
 ResultadosSumado{Lo,3} = DiceCoeff;
 ResultadosSumado{Lo,4} = JAC;
-aji2 = Aggregated_Jaccard_Index_v1_0(binary_maskTest,bwlabel(or(MaskOriginal,MaskEvaluate)));
+%aji2 = Aggregated_Jaccard_Index_v1_0(binary_maskTest,bwlabel(or(MaskOriginal,MaskEvaluate)));
+aji2=0;
 ResultadosSumado{Lo,5} = aji2;
 
 save([FolderResults,'Results_',ResultsName,'Sumados.mat'],'ResultadosSumado')    
@@ -126,7 +129,7 @@ mkdir(FolderImgsEmpeoran);
 Mejoraron = {};
 empeoraron = {};
 
-CompararAJI = [[ResultadosOriginal{:,5}];[ResultadosSumado{:,5}]];
+CompararAJI = [[ResultadosOriginal{:,3}];[ResultadosSumado{:,3}]];
 indexMejoraron = CompararAJI(1,:)<CompararAJI(2,:);
 
 for id = 1:length(indexMejoraron)
@@ -148,12 +151,12 @@ end
 
 CompararAJI={};
 CompararAJI(:,1) = ResultadosSumado(:,1);
-CompararAJI(:,2) = ResultadosOriginal(:,5);
+CompararAJI(:,2) = ResultadosOriginal(:,3);
 CompararAJI(:,3) = num2cell([double(indexMejoraron)]);
-CompararAJI(:,4) = ResultadosSumado(:,5);
-CompararAJI(:,5) = num2cell([ResultadosOriginal{:,5}]-[ResultadosSumado{:,5}]);%diferencias
+CompararAJI(:,4) = ResultadosSumado(:,3);
+CompararAJI(:,5) = num2cell([ResultadosOriginal{:,3}]-[ResultadosSumado{:,3}]);%diferencias
 
-[d,idMaxDiff] = max([CompararAJI{:,5}]);
+[d,idMaxDiff] = max([CompararAJI{:,3}]);
 
 
 
