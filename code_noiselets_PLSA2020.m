@@ -18,6 +18,9 @@ addpath('/home/ricardo/Documents/Doctorado/NucleosMTC/codes/')
 
 FolderIMG = '/home/ricardo/Documents/Doctorado/NucleosMTC/Tissue_images/';
 FolderXML = '/home/ricardo/Documents/Doctorado/NucleosMTC/Annotations/';
+%FolderIMG = '/home/ricardo/Documents/Doctorado/NucleosMTC/Tissue_images/';
+%FolderXML = '/home/ricardo/Documents/Doctorado/NucleosMTC/Annotations/';
+
 %% Folder Results
 FolderResults = '/home/ricardo/Documents/Doctorado/Reuniones2020/ResultsRed/';
 mkdir(FolderResults)

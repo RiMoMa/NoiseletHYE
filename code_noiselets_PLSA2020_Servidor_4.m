@@ -132,7 +132,7 @@ empeoraron = {};
 CompararAJI = [[ResultadosOriginal{:,3}];[ResultadosSumado{:,3}]];
 indexMejoraron = CompararAJI(1,:)<CompararAJI(2,:);
 
-for id = 1:length(indexMejoraron)
+for id = 1:length(ind exMejoraron)
     imName = [Resultados{id,1},'.png'];
     ImPathOriginalSegmentation = [FolderImgsOriginal,imName];
     ImPathMethodSegmentation = [FolderImgsMethod,imName];
