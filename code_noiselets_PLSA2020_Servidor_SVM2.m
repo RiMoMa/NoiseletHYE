@@ -72,7 +72,7 @@ ListIMGALL = ListIMGALL(VocabCases);
 for Lo = 1:length(ListIMGALL)
     fprintf('AbriendoImagen\n') 
     fprintf('%s\n',ListIMGALL(Lo).name) 
-    ImTest = imread([FolderIMG,ListIMGALL(Lo).name]);
+    ImTest = imread([FolderTraining,ListIMGALL(Lo).name]);
     fprintf('Mejorando Imagen\n') 
  %ToDo: COncatenate img features
     [XFeatures,CoordIMG] = NoiseletsFeatures(ImTest,Scales,WinPlsa);
@@ -92,10 +92,10 @@ Labels_img=[];
 for Lo = 1:length(ListImgsTrain)
     fprintf('AbriendoImagen\n') 
     fprintf('%s\n',ListImgsTrain(Lo).name) 
-    ImTest = imread([FolderIMG,ListImgsTrain(Lo).name]);
+    ImTest = imread([FolderTraining,ListImgsTrain(Lo).name]);
     fprintf('Mejorando Imagen\n') 
         %% abrir mascara manual para generar etiquetas
-    ImGroundT = imread([FolderIMG,ListImgsTrain(Lo).name(1:end-8),'labeled_mask_corrected.png'])>0;
+    ImGroundT = imread([FolderTraining,ListImgsTrain(Lo).name(1:end-8),'labeled_mask_corrected.png'])>0;
   %  [binary_maskTest,color_maskTest] =
   %  xlmToMask(ListIMGALL(Lo).name(1:end-4),FolderXML,FolderIMG);%% Para
   %  dataset Monuseg
@@ -130,10 +130,10 @@ Labels_img=[];
 for Lo = 1:length(ListImgsTrain)
     fprintf('AbriendoImagen\n') 
     fprintf('%s\n',ListImgsTrain(Lo).name) 
-    ImTest = imread([FolderIMG,ListImgsTrain(Lo).name]);
+    ImTest = imread([FolderTesting,ListImgsTrain(Lo).name]);
     fprintf('Mejorando Imagen\n') 
         %% abrir mascara manual para generar etiquetas
-    [ImGroundT,color_mask]=xlmToMask(ListIMGTest(Lo).name(1:end-4),folderXML,folderIMG);
+    [ImGroundT,color_mask]=xlmToMask(ListIMGTest(Lo).name(1:end-4),folderXML,FolderTesting);
   % [binary_maskTest,color_maskTest] =
   % xlmToMask(ListIMGALL(Lo).name(1:end-4),FolderXML,FolderIMG);%% Para
   % dataset Monuseg
