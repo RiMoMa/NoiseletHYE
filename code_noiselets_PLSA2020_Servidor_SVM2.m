@@ -69,7 +69,7 @@ VocabCases = randperm(length(ListIMGALL),round(length(ListIMGALL)*0.35));
 
 ListIMGALL = ListIMGALL(VocabCases);
 
-for Lo = 1:length(ListIMGALL)
+for Lo = 1:10%length(ListIMGALL)
     fprintf('AbriendoImagen\n') 
     fprintf('%s\n',ListIMGALL(Lo).name) 
     ImTest = imread([FolderTraining,ListIMGALL(Lo).name]);
@@ -77,7 +77,7 @@ for Lo = 1:length(ListIMGALL)
  %ToDo: COncatenate img features
     [XFeatures,CoordIMG] = NoiseletsFeatures(ImTest,Scales,WinPlsa);
     allFeatures = [allFeatures;XFeatures];
-    allLabels = [allLabels;imLabels];
+%    allLabels = [allLabels;imLabels];
     
        
 end    
@@ -88,10 +88,11 @@ end
 [idx,vocab] = kmeans(allFeatures,K_clusters);
 %Build histograms and extract labels
 histo_img=[];
-Labels_img=[];
-for Lo = 1:length(ListImgsTrain)
+labels_img=[];
+for Lo = 1:10%length(ListImgsTrain)
     fprintf('AbriendoImagen\n') 
     fprintf('%s\n',ListImgsTrain(Lo).name) 
+    fprintf('%d\n',Lo)
     ImTest = imread([FolderTraining,ListImgsTrain(Lo).name]);
     fprintf('Mejorando Imagen\n') 
         %% abrir mascara manual para generar etiquetas
@@ -99,16 +100,16 @@ for Lo = 1:length(ListImgsTrain)
   %  [binary_maskTest,color_maskTest] =
   %  xlmToMask(ListIMGALL(Lo).name(1:end-4),FolderXML,FolderIMG);%% Para
   %  dataset Monuseg
-   [labelsAll,histograms] = NoiseletsPLSAHistogramImg(ImTest,Scales,WinPlsa,groundT,vocab);
+   [labelsAll,histograms] = NoiseletsPLSAHistogramImg(ImTest,Scales,WinPlsa,ImGroundT,vocab);
        histo_img = [histo_img;histograms];
-       labels_img = [labels_img;labelsAll];
+       labels_img = [labels_img,labelsAll];
        
 end
 
 
 
 %% train a svm
-histo_img=X;
+X=histo_img;
 Y=labels_img;
 
 ClassTreeEns = fitensemble(X,Y,'AdaBoostM1',100,'Tree');
@@ -123,24 +124,27 @@ ylabel('Resubstitution Loss')
 %%%%%%%%%%--------- TEST ------- %%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-ListIMGTest = dir(strcat(FolderTesting,'*tiff'));
+ListImgsTest = dir(strcat(FolderTesting,'*.tif'));
 
 histo_img=[];
 Labels_img=[];
-for Lo = 1:length(ListImgsTrain)
+for Lo = 1:10%length(ListImgsTest)
     fprintf('AbriendoImagen\n') 
-    fprintf('%s\n',ListImgsTrain(Lo).name) 
-    ImTest = imread([FolderTesting,ListImgsTrain(Lo).name]);
+    fprintf('%s\n',ListImgsTest(Lo).name) 
+    ImTest = imread([FolderTesting,ListImgsTest(Lo).name]);
     fprintf('Mejorando Imagen\n') 
         %% abrir mascara manual para generar etiquetas
-    [ImGroundT,color_mask]=xlmToMask(ListIMGTest(Lo).name(1:end-4),folderXML,FolderTesting);
+tic
+    [ImGroundT,color_mask]=xlmToMask(ListImgsTest(Lo).name(1:end-4),FolderXML,FolderTesting);
+toc
   % [binary_maskTest,color_maskTest] =
   % xlmToMask(ListIMGALL(Lo).name(1:end-4),FolderXML,FolderIMG);%% Para
   % dataset Monuseg
- 
-  [labelsAll,histograms] = NoiseletsPLSAHistogramImg(ImTest,Scales,WinPlsa,groundT,vocab);
+ tic
+  [labelsAll,histograms] = NoiseletsPLSAHistogramImg(ImTest,Scales,WinPlsa,ImGroundT,vocab);
+toc
   histo_img = [histo_img;histograms];
-  labels_img = [labels_img;labelsAll];
+  labels_img = [labels_img,labelsAll];
  
   
   
