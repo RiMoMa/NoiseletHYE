@@ -34,8 +34,8 @@ for win_size = Scales
     [Inorm,H,E] = normalizeStaining(im,im,220,0.06);
     %[H,E] = ColorSepCimalab(im);
     %labim = rgb2lab(H);
-    ime = H(:,:,1);
-
+    ime = double( H(:,:,1));
+    ime = (ime-min(ime(:)))/(max(ime(:))-min(ime(:)));
     %%% Extract Noiselets from tiles
     [pila_patches_orig,coords,lienzo,pila_patches_gray] = ExtractTilesAndNoiselets(win_size,ime,aa,bb);
         

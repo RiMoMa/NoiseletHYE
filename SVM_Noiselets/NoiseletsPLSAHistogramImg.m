@@ -2,15 +2,6 @@ function [labelsAll,histograms,im,Inm] = NoiseletsPLSAHistogramImg(im,Scales,Win
 %%%%%%%%%%%% Obtain histograms of an image by using and vocabulary and if
 %%%%%%%%%%%% classifier is avalaible claffified histograms
 
-if ~exist('ClassModel', 'var') || isempty(ClassModel)
-    ClassModelexist = 0;    
-    
-end
-
-if ~exist('GroundT', 'var') || isempty(GroundT)
-    GroundTexist = 0;    
-    
-end
 
 
 %%% Sacar Mascaras
@@ -47,16 +38,16 @@ addpath('FNT')
     [Inorm,H,E] = normalizeStaining(im,im,220,0.06);
     %[H,E] = ColorSepCimalab(im);
     %labim = rgb2lab(H);
-    ime = H(:,:,1);
+    ime = double(H(:,:,1));
+    ime=(ime-min(ime(:)))/(max(ime(:))-min(ime(:)));
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %%% Extract Noiselets from tiles%%%%
-    if GroundTexist==1
+    if exist('GroundT')
     [pila_patches_orig,coords,lienzo,pila_patches_gray,labels] = ExtractTilesAndNoiseletsLabels(Scales,ime,aa,bb,GroundT);
     else
         [pila_patches_orig,coords,lienzo,pila_patches_gray] = ExtractTilesAndNoiselets(Scales,ime,aa,bb);
     end
-        
-    %% cords 
+        %% cords 
     %%%%%%%%%%%%%%%%%%
     
       %  dataset Monuseg
@@ -71,14 +62,13 @@ addpath('FNT')
     X(:,2:2:end) = angle_pila; 
     XFeatures = X;
 
-    %%histogram building
-    [~,idx] = pdist2(vocab,XFeatures,'cityblock','Smallest',1);
     
-    
+        [~,idx] = pdist2(vocab,XFeatures,'cityblock','Smallest',1);
+
   
        
        
-       lienzo2 =lienzo;
+       lienzo2 =zeros(size(lienzo));
 
 
     
@@ -89,7 +79,7 @@ addpath('FNT')
         lienzo(1+win_size*(aux_point(1)-1):(aux_point(1))*win_size,1+win_size*(aux_point(2)-1):(aux_point(2))*win_size) = ...
             idx(L)*ones(win_size,win_size);
         
-        if GroundTexist==1
+        if exist('GroundT')
         lienzo2(1+win_size*(aux_point(1)-1):(aux_point(1))*win_size,1+win_size*(aux_point(2)-1):(aux_point(2))*win_size) = ...
             labels(L)*ones(win_size,win_size);
         end
@@ -100,13 +90,17 @@ addpath('FNT')
     
     %%%% PLSA Analysis
     
-    
-    [pila_patches_PLSA,coordsPLSA,lienzoPLSA,histograms] = ExtractTilesOneDPyramidal(WinPlsa,lienzo,aa,bb);
-    if GroundTexist==1
+    Nclusters=size(vocab,1);
+    [pila_patches_PLSA,coordsPLSA,lienzoPLSA,histograms] = ExtractTilesOneDPyramidal(WinPlsa,lienzo,aa,bb,Nclusters);
+    if exist('GroundT')
         %this can be better to high speed ^<--
-    [pila_patches_PLSA2,coordsPLSA2,lienzoPLSA2,histograms2] = ExtractTilesOneDPyramidal(WinPlsa,lienzo2,aa,bb);
+    [pila_patches_PLSA2,coordsPLSA2,lienzoPLSA2,histograms2] = ExtractTilesOneDPyramidal(WinPlsa,lienzo2+1,aa,bb,2);
+    if any(GroundT(:))
     labelsAll = histograms2(:,2)>round(0.10*WinPlsa^2);
-labelsAll = labelsAll>1;
+    else
+        labelsAll = zeros(size(histograms2(:,1)));
+    end
+%labelsAll = labelsAll>1;
     
     
     end
@@ -118,13 +112,16 @@ labelsAll = labelsAll>1;
 
 
 
-if ClassModelexist==1
-    LabelsHisto = predict(ClassModel,Histograms);
-        for L = 1:length(coords)
+if exist('ClassModel')
+           lienzo2 =zeros(size(lienzo));
 
+    LabelsHisto = predict(ClassModel,histograms);
+        for L = 1:length(coordsPLSA)
+            
+        aux_point = coordsPLSA(L,:);
 
-        lienzo2(1+win_size*(aux_point(1)-1):(aux_point(1))*win_size,1+win_size*(aux_point(2)-1):(aux_point(2))*win_size) = ...
-            LabelsHisto(L)*ones(win_size,win_size);
+        lienzo2(1+WinPlsa*(aux_point(1)-1):(aux_point(1))*WinPlsa,1+WinPlsa*(aux_point(2)-1):(aux_point(2))*WinPlsa) = ...
+            LabelsHisto(L)*ones(WinPlsa,WinPlsa);
 
         end   
     
