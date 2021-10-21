@@ -17,7 +17,7 @@ addpath('nuclei_seg/veta_watershed/')
 
 
 %% Folder Results
-FolderResults = '//mnt/md0/ricardo/NoiseletProject/Results_SVM_2021/';
+FolderResults = '//mnt/md0/ricardo/NoiseletProject/Results_SVM_2021_B/';
 mkdir(FolderResults)
 FolderImgsMethod = [FolderResults,'ImgsMethodRed2/'];
 mkdir(FolderImgsMethod);
@@ -44,7 +44,7 @@ clasesMonu=unique([ListOfImgCases{:,2}]);%sacar las clases del dataset
       load([FolderResults,'MatrizExperimentosSVM.mat'])%% archivo que contiene los parametros experimentales
       
       
-for ClassExp = 1:length(clasesMonu) %realizar experimento por clase
+for ClassExp =2  %realizar experimento por clase
 SelClass = clasesMonu(ClassExp)    ;
 fprintf('Evaluating for %s tissue\n',SelClass)
 count=0;
@@ -81,7 +81,7 @@ count=0;
 
 
 
-    for Expe = 1:16%6
+    for Expe = 13%6
         % Load parameters for each experiment
         Scales = [ExperimentosNoiselets{Expe,2}];
         WinPlsa = ExperimentosNoiselets{Expe,3};
@@ -238,8 +238,8 @@ toc
    %save([FolderResults,'Results_',ResultsName,'Original.mat'],'ResultadosOriginal')    
 
    
- %  ImBorde = imoverlay(ImTest,boundarymask(MaskOriginal));
-  % imwrite(ImBorde,[FolderImgsOriginal,ListIMGALL(Lo).name(1:end-4),'.png' ]);
+   ImBorde = imoverlay(ImTest,boundarymask(MaskOriginal));
+   imwrite(ImBorde,[FolderImgsOriginal,ImgTestS,'.png' ]);
 
    
    
@@ -264,19 +264,19 @@ toc
     save([FolderResults,'Results_',char(SelClass),'_Space.mat'],...,
         'Resultados_SumadoImg','Resultados_acc_SVM','Resultados_Only_method','Resultados_OriginalImg')
 
-    %ImBorde = imoverlay(ImTest,boundarymask(or(MaskOriginal,MaskEvaluate)));    
-    %imwrite(ImBorde,[FolderImgsSumado,ListIMGALL(Lo).name(1:end-4),'.png' ]);
+    ImBorde = imoverlay(ImTest,boundarymask(or(MaskOriginal,MaskEvaluate)));    
+    imwrite(ImBorde,[FolderImgsSumado,ImgTestS,'.png' ]);
    
    
    
     %%Imagen borde nucleos detectados en la original
- %   ImBorde = imoverlay(ImTest,boundarymask(MaskOriginal));
- %   imwrite(ImBorde,[FolderImgsOriginal,ImgTestS,'.png' ]);
+    ImBorde = imoverlay(ImTest,boundarymask(MaskOriginal));
+    imwrite(ImBorde,[FolderImgsOriginal,ImgTestS,'.png' ]);
 
 
     
     %%%%% Imagen sin ruido
-%  imwrite(ImEnhance,[FolderImgsSinRuido,ImgTestS,'.png' ]);
+  imwrite(ImEnhance,[FolderImgsSinRuido,ImgTestS,'.png' ]);
    
  
     

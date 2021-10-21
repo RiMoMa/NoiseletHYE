@@ -44,7 +44,7 @@ clasesMonu=unique([ListOfImgCases{:,2}]);%sacar las clases del dataset
       load([FolderResults,'MatrizExperimentosSVM.mat'])%% archivo que contiene los parametros experimentales
       
       
-for ClassExp = 1:length(clasesMonu) %realizar experimento por clase
+for ClassExp = 7 %realizar experimento por clase
 SelClass = clasesMonu(ClassExp)    ;
 fprintf('Evaluating for %s tissue\n',SelClass)
 count=0;
@@ -81,7 +81,7 @@ count=0;
 
 
 
-    for Expe = 1:16%6
+    for Expe = 1:8%6
         % Load parameters for each experiment
         Scales = [ExperimentosNoiselets{Expe,2}];
         WinPlsa = ExperimentosNoiselets{Expe,3};
