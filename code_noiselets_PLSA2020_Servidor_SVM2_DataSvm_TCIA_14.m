@@ -46,7 +46,7 @@ clasesMonu=unique([ListOfImgCases{:,2}]);%sacar las clases del dataset
       load([FolderResults,'MatrizExperimentosSVM.mat'])%% archivo que contiene los parametros experimentales
       
       
-for ClassExp = 1:length(clasesMonu) %realizar experimento por clase
+for ClassExp = 14%:length(clasesMonu) %realizar experimento por clase
     imageForExperiment=[];
 
     SelClass = clasesMonu(ClassExp)    ;
@@ -77,7 +77,9 @@ for ClassExp = 1:length(clasesMonu) %realizar experimento por clase
     %%% 3. Make data partion
     
     
-    %%%%% LEAVE ONE OUT VALIDATION SCHEME %%%%
+    %%%%% K FOLD VALIDATION SCHEME %%%%
+    
+AccumTest=0; %This variable is employed to count evaluated images and then create the matrix of results dependend of the kfold and the number of test images   
     
     for OneOut = 1:KFold
         
@@ -87,8 +89,8 @@ for ClassExp = 1:length(clasesMonu) %realizar experimento por clase
        ImgsTraining = imageForExperiment(idxTraining);
        
        %%%%%%% Training %%%%%%%%%
-       ListIMGALL = ImgsTraining; %just a change of variable
-       ListImgsTrain = ListIMGALL;
+       ListIMGALLT = ImgsTraining; %just a change of variable
+       ListImgsTrain = ListIMGALLT;
 
 
 
@@ -107,10 +109,10 @@ for ClassExp = 1:length(clasesMonu) %realizar experimento por clase
     allFeatures = [];
     allLabels = [];
 
-    VocabCases = randperm(length(ListIMGALL),round(length(ListIMGALL)*0.4));
+    VocabCases = randperm(length(ListIMGALLT),round(length(ListIMGALLT)*0.4));
     %VocabCases = randperm(length(ListIMGALL),length(ListIMGALL));
 
-    ListIMGALL = ListIMGALL(VocabCases);
+    ListIMGALL = ListIMGALLT(VocabCases);
 %%% VOCABULARY FEATURE EXTRACTION
 for Lo = 1:length(ListIMGALL)
     fprintf('AbriendoImagen\n') 
@@ -173,6 +175,7 @@ fprintf('Test Img\n')
 histo_img=[];
 labels_imgTest=[];
 for Lo = 1:length(TestImg) %%% this for is always 1, a cicle for her would be used to K-fold validation
+    AccumTest = AccumTest+1;
     fprintf('AbriendoImagen\n') 
     ImgTestS = num2str(TestImg(Lo));
     fprintf('%s\n',ImgTestS) 
@@ -237,15 +240,15 @@ toc
 %%%%%%%%%%%%%%%%%%%%%%%%%
    fprintf('Calculando Metricas Sin Sumar\n') 
    DiceCoeff = dice(double(MaskEvaluate>0), double(ImManualMask>0)); 
-   Resultados_Only_method{Expe,2*OneOut-1} = ListIMGALL(Lo);    
-   Resultados_Only_method{Expe,OneOut*2} = DiceCoeff;
+   Resultados_Only_method{Expe,2*AccumTest-1} = ImgTestS;    
+   Resultados_Only_method{Expe,AccumTest*2} = DiceCoeff;
 
 
    %%%%%%%%%%%%%%%%%%
    fprintf('Calculando Metricas Watershed Original\n') 
    DiceCoeff = dice(double(MaskOriginal>0), double(ImManualMask>0)); 
-   Resultados_OriginalImg{Expe,2*OneOut-1} = ImgTestS;    
-   Resultados_OriginalImg{Expe,OneOut*2} = DiceCoeff;
+   Resultados_OriginalImg{Expe,2*AccumTest-1} = ImgTestS;    
+   Resultados_OriginalImg{Expe,AccumTest*2} = DiceCoeff;
 
 
    %save([FolderResults,'Results_',ResultsName,'Original.mat'],'ResultadosOriginal')    
@@ -261,15 +264,15 @@ toc
 
    
     DiceCoeff = dice(double(sumaBinary>0), double(ImManualMask>0)); 
-    Resultados_SumadoImg{Expe,2*OneOut-1} =ImgTestS;
-    Resultados_SumadoImg{Expe,OneOut*2} = DiceCoeff;
+    Resultados_SumadoImg{Expe,2*AccumTest-1} = ImgTestS;
+    Resultados_SumadoImg{Expe,AccumTest*2} = DiceCoeff;
     
     
   %  save([FolderResults,'Results_',ResultsName,'_SVM.mat'],'accuaracy','cm')    
 
 
-    Resultados_acc_SVM{Expe,2*OneOut-1} = ImgTestS;
-    Resultados_acc_SVM{Expe,OneOut*2} = accuaracy;
+    Resultados_acc_SVM{Expe,2*AccumTest-1} = ImgTestS;
+    Resultados_acc_SVM{Expe,AccumTest*2} = accuaracy;
 
     
     
@@ -302,6 +305,7 @@ end
 
     end
     end
+    AccumTest=0; %variable is reset for the next tissue if is needed
 end
 
 
