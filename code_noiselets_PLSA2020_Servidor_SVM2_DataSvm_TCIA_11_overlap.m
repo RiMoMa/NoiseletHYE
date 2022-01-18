@@ -7,7 +7,9 @@
 
 
 %%%% Libraries %%%%%%%%%%%5
-addpath('/mnt/md0/ricardo/CodesInternship/GITP/')
+%addpath('/mnt/md0/ricardo/CodesInternship/GITP/')
+addpath('/home/ricardo/Documents/Doctorado/SYNC/all_codes/CodesInternship/GITP/')
+
 addpath('nuclei_seg/staining_normalization/')
 addpath('SVM_Noiselets/')
 addpath('FNT')
@@ -17,7 +19,7 @@ addpath('nuclei_seg/veta_watershed/')
 %%%%%%%%%%%%%%%%%5
 
 %%%%%%%%% Folder Results %%%%%%%%
-FolderResults = '/mnt/md0/ricardo/NoiseletProject/Results_SVM_2021_TCIA/'; %folder Out
+FolderResults =     '/home/ricardo/Documents/Doctorado/NucleosMTC/ResultsTCIA_Norm_2022/'; %folder Out
 mkdir(FolderResults)
 FolderImgsMethod = [FolderResults,'ImgsMethodRed2/']; % imgs H&E without noise
 mkdir(FolderImgsMethod);
@@ -34,7 +36,8 @@ mkdir(FolderImgsGroundTruth);
 
 
 %%% Dataset Dir %%%d
-FolderIMG = '/mnt/md0/Histopathology/Datasets/TCIA/';
+%FolderIMG = '/mnt/md0/Histopathology/Datasets/TCIA/';
+FolderIMG = '/home/ricardo/Documents/Doctorado/DatasetTCIA_NORM/';
 %FolderXML =
 %'/mnt/md0/Histopathology/Datasets/DatasetMonusegC/Annotations/'; %this is for monuseg dataset
 FolderMasksTest = [FolderIMG,'Masks/'];
@@ -71,7 +74,21 @@ for ClassExp = 11%:length(clasesMonu) %realizar experimento por clase
     Resultados_SumadoImg = cell(length(ExperimentosNoiselets),length(imageForExperiment)*2);
     Resultados_OriginalImg = cell(length(ExperimentosNoiselets),length(imageForExperiment)*2);
     Resultados_Only_method = cell(length(ExperimentosNoiselets),length(imageForExperiment)*2);
-
+    
+    %%%% PRECISION DETECTION PER CASE
+    Resultados_PrecisionD_SumadoImg = cell(length(ExperimentosNoiselets),length(imageForExperiment)*2);
+    Resultados_PrecisionD_OriginalImg = cell(length(ExperimentosNoiselets),length(imageForExperiment)*2);
+    Resultados_PrecisionD_Only_method = cell(length(ExperimentosNoiselets),length(imageForExperiment)*2);
+    %%%% RECALL DETECTION PER CASE    
+    Resultados_RecallD_SumadoImg = cell(length(ExperimentosNoiselets),length(imageForExperiment)*2);
+    Resultados_RecallD_OriginalImg = cell(length(ExperimentosNoiselets),length(imageForExperiment)*2);
+    Resultados_RecallD_Only_method = cell(length(ExperimentosNoiselets),length(imageForExperiment)*2);
+    %%%% FSCORE DETECTION PER CASE    
+    Resultados_FscoreD_SumadoImg = cell(length(ExperimentosNoiselets),length(imageForExperiment)*2);
+    Resultados_FscoreD_OriginalImg = cell(length(ExperimentosNoiselets),length(imageForExperiment)*2);
+    Resultados_FscoreD_Only_method = cell(length(ExperimentosNoiselets),length(imageForExperiment)*2);
+    
+    
     %%%%%%%%%%%%% K-Fold Partition
     %%% 1. Randomize Images
     %%% 2. Determine number of train and test Images
@@ -118,7 +135,7 @@ AccumTest=0; %This variable is employed to count evaluated images and then creat
 
     ListIMGALL = ListIMGALLT(VocabCases);
 %%% VOCABULARY FEATURE EXTRACTION
-for Lo = 1:length(ListIMGALL)
+for Lo = 1:15%length(ListIMGALL)
     fprintf('AbriendoImagen\n') 
     fprintf('%s\n',num2str(ListIMGALL(Lo))) 
     ImTest = imread([FolderTraining,num2str(ListIMGALL(Lo)),'_crop.png']);
@@ -138,7 +155,7 @@ end
 %Build histograms and extract labels
 histo_img=[];
 labels_img=[];
-for Lo = 1:length(ListImgsTrain)
+for Lo = 1:15%length(ListImgsTrain)
     ImgTrainName = num2str(ListImgsTrain(Lo));
     fprintf('AbriendoImagen\n') 
     fprintf('%s\n',ImgTrainName) 
@@ -150,7 +167,7 @@ for Lo = 1:length(ListImgsTrain)
 %    [binary_maskTest,color_maskTest] = xlmToMask(ImgTrainName,FolderXML,FolderIMG);%% Para
   %  dataset Monuseg
     % ImGroundT = binary_maskTest>0;
-      [labelsAll,histograms] = NoiseletsPLSAHistogramImg(ImTrain,Scales,WinPlsa,ImGroundT,vocab);
+      [labelsAll,histograms] = NoiseletsPLSAHistogramImg_overlap(ImTrain,Scales,WinPlsa,ImGroundT,vocab);
        histo_img = [histo_img;histograms];
        labels_img = [labels_img;labelsAll];
        
@@ -190,14 +207,15 @@ for Lo = 1:length(TestImg) %%% this for is always 1, a cicle for her would be us
 tic
     if ~exist(MaskName)
         fprintf('generating image \n')
-    ImGroundT = imread([FolderTraining,ImgTestS,'_labeled_mask_corrected.png'])>0;
+    ImGroundTE = imread([FolderTraining,ImgTestS,'_labeled_mask_corrected.png']);
+    ImGroundT = ImGroundTE >0; 
         %[ImGroundT,color_mask]=xlmToMask(ImgTestS,FolderXML,FolderTesting);
     
   %  imwrite(ImGroundT,MaskName)
     
     else
-       ImGroundT = imread(MaskName)>0;       
-        
+       ImGroundTE = imread(MaskName);       
+       ImGroundT = ImGroundTE >0; 
     end
     ImManualMask=ImGroundT;
 toc
@@ -212,7 +230,7 @@ toc
 %% 
    tic
   try
-  [labelsAll,histograms,ImEnhance,ImNormNoiselet] = NoiseletsPLSAHistogramImg(ImTest,Scales,WinPlsa,ImGroundT,vocab,ClassModel);
+  [labelsAll,histograms,ImEnhance,ImNormNoiselet] = NoiseletsPLSAHistogramImg_overlap(ImTest,Scales,WinPlsa,ImGroundT,vocab,ClassModel);
          %%%% SACAR RESULTADOS GENERALES DE LA CLASSIFICACION
 
         %% Evaluate SVM
@@ -241,12 +259,13 @@ toc
    fprintf('Suma de las mascaras \n')
    sumaBinary = or(MaskOriginal,MaskEvaluate);
 %%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%% METRICS %%%%%%%%%%%
    fprintf('Calculando Metricas Sin Sumar\n') 
    DiceCoeff = dice(double(MaskEvaluate>0), double(ImManualMask>0)); 
+   %% DETECTION METRIC
    Resultados_Only_method{Expe,2*AccumTest-1} = ImgTestS;    
    Resultados_Only_method{Expe,AccumTest*2} = DiceCoeff;
-
+  
 
    %%%%%%%%%%%%%%%%%%
    fprintf('Calculando Metricas Watershed Original\n') 
@@ -254,35 +273,75 @@ toc
    Resultados_OriginalImg{Expe,2*AccumTest-1} = ImgTestS;    
    Resultados_OriginalImg{Expe,AccumTest*2} = DiceCoeff;
 
-
    %save([FolderResults,'Results_',ResultsName,'Original.mat'],'ResultadosOriginal')    
-
    
  %  ImBorde = imoverlay(ImTest,boundarymask(MaskOriginal));
   % imwrite(ImBorde,[FolderImgsOriginal,ListIMGALL(Lo).name(1:end-4),'.png' ]);
-
-   
-   
+  
    
    fprintf('Calculando Metricas Suma Metodos\n') 
-
-   
+  
     DiceCoeff = dice(double(sumaBinary>0), double(ImManualMask>0)); 
     Resultados_SumadoImg{Expe,2*AccumTest-1} = ImgTestS;
     Resultados_SumadoImg{Expe,AccumTest*2} = DiceCoeff;
-    
+ 
     
   %  save([FolderResults,'Results_',ResultsName,'_SVM.mat'],'accuaracy','cm')    
 
 
     Resultados_acc_SVM{Expe,2*AccumTest-1} = ImgTestS;
     Resultados_acc_SVM{Expe,AccumTest*2} = accuaracy;
-
     
+    
+    %%% Metrics for nuclei Detection
+ 
+[Precision_S,Recall_S,Fscore_S] = Nuclei_centroidsBased_metric(ImGroundTE, sumaBinary);
+[Precision_O,Recall_O,Fscore_O] = Nuclei_centroidsBased_metric(ImGroundTE, MaskOriginal);
+[Precision_M,Recall_M,Fscore_M] = Nuclei_centroidsBased_metric(ImGroundTE, MaskEvaluate);
+
+       %%%% PRECISION DETECTION PER CASE
+    Resultados_PrecisionD_SumadoImg{Expe,2*AccumTest-1} = ImgTestS;
+    Resultados_PrecisionD_SumadoImg{Expe,AccumTest*2} = Precision_S(3);
+    
+    Resultados_PrecisionD_OriginalImg{Expe,2*AccumTest-1} = ImgTestS;
+    Resultados_PrecisionD_OriginalImg{Expe,AccumTest*2} = Precision_O(3);
+    
+    Resultados_PrecisionD_Only_method{Expe,2*AccumTest-1} = ImgTestS;
+    Resultados_PrecisionD_Only_method{Expe,AccumTest*2} = Precision_M(3);
+        
+    %%%% RECALL DETECTION PER CASE    
+    Resultados_RecallD_SumadoImg{Expe,2*AccumTest-1} = ImgTestS;
+    Resultados_RecallD_SumadoImg{Expe,AccumTest*2} = Recall_S(3);
+    
+    Resultados_RecallD_OriginalImg{Expe,2*AccumTest-1} = ImgTestS;
+    Resultados_RecallD_OriginalImg{Expe,AccumTest*2} = Recall_O(3);
+    
+    Resultados_RecallD_Only_method{Expe,2*AccumTest-1} = ImgTestS;
+    Resultados_RecallD_Only_method{Expe,AccumTest*2} = Recall_M(3);
+    %%%% FSCORE DETECTION PER CASE    
+    Resultados_FscoreD_SumadoImg{Expe,2*AccumTest-1} = ImgTestS;
+    Resultados_FscoreD_SumadoImg{Expe,AccumTest*2} = Fscore_S(3);
+    
+    Resultados_FscoreD_OriginalImg{Expe,2*AccumTest-1} = ImgTestS;
+    Resultados_FscoreD_OriginalImg{Expe,AccumTest*2} = Fscore_O(3);
+    
+    Resultados_FscoreD_Only_method{Expe,2*AccumTest-1} = ImgTestS;
+    Resultados_FscoreD_Only_method{Expe,AccumTest*2} = Fscore_M(3);
+     
     
     
     save([FolderResults,'Results_',char(SelClass),'_Space.mat'],...,
-        'Resultados_SumadoImg','Resultados_acc_SVM','Resultados_Only_method','Resultados_OriginalImg')
+        'Resultados_SumadoImg','Resultados_acc_SVM','Resultados_Only_method','Resultados_OriginalImg',...,
+        'Resultados_PrecisionD_SumadoImg',...,
+        'Resultados_PrecisionD_OriginalImg',...,
+    'Resultados_PrecisionD_Only_method',...,
+    'Resultados_RecallD_SumadoImg',...,
+    'Resultados_RecallD_OriginalImg',...,
+    'Resultados_RecallD_Only_method',...,
+    'Resultados_FscoreD_SumadoImg',...,
+    'Resultados_FscoreD_OriginalImg',...,
+    'Resultados_FscoreD_Only_method')
+    
 
     %ImBorde = imoverlay(ImTest,boundarymask(or(MaskOriginal,MaskEvaluate)));    
     %imwrite(ImBorde,[FolderImgsSumado,ListIMGALL(Lo).name(1:end-4),'.png' ]);
