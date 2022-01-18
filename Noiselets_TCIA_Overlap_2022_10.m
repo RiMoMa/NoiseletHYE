@@ -54,7 +54,7 @@ clasesMonu=unique([ListOfImgCases{:,2}]);%sacar las clases del dataset
 load([FolderResults,'MatrizExperimentosSVM.mat'])%% archivo que contiene los parametros experimentales
       
       
-for ClassExp = 11%:length(clasesMonu) %realizar experimento por clase
+for ClassExp = 10%:length(clasesMonu) %realizar experimento por clase
     imageForExperiment=[];
 
     SelClass = clasesMonu(ClassExp) ;
