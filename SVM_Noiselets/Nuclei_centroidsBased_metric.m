@@ -53,9 +53,12 @@ tD = [2,4,8,16];
     end
     try
     C = bsxfun(@lt,euclidean_distances',tD);%compute if is a TP for each treshold
+    if all(size(C)==[1,4])
+        C(2,:)=[0,0,0,0];
+    end
     TP = sum(C); % sum of true positive nuclei
     catch
-        TP=NaN;
+        TP=[NaN,NaN,NaN,NaN];
     end
     a = [evaluated_centroids.Centroid]; % for determine nucleus without intersection in the evaluated mask
     FP = sum(~ismissing(a))/2; %compute number of FP by counting NAN elements in a twoD array (->/2)
