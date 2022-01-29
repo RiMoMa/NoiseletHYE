@@ -102,7 +102,7 @@ for ClassExp = 14%:length(clasesMonu) %realizar experimento por clase
     
     %%%%% K FOLD VALIDATION SCHEME %%%%
     
-AccumTest=0; %This variable is employed to count evaluated images and then create the matrix of results dependend of the kfold and the number of test images   
+    AccumTest=0; %This variable is employed to count evaluated images and then create the matrix of results dependend of the kfold and the number of test images   
     
     for OneOut = 1:KFold
         
