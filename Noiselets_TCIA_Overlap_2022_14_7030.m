@@ -7,7 +7,7 @@
 
 
 %%%% Libraries %%%%%%%%%%%5
-addpath('/mnt/md0/ricardo/CodesInternship/GITP/')
+addpath('/mnt/storage/ramoncayomar/Codes/CodesInternship/GITP/')
 %addpath('/home/ricardo/Documents/Doctorado/SYNC/all_codes/CodesInternship/GITP/')
 
 addpath('nuclei_seg/staining_normalization/')
@@ -143,7 +143,7 @@ for Lo = 1:length(ListIMGALL)
     ImTest = imread([FolderTraining,num2str(ListIMGALL(Lo)),'_crop.png']);
     fprintf('Mejorando Imagen\n') 
  %ToDo: COncatenate img features
-    [XFeatures,CoordIMG] = NoiseletsFeatures_overlap(ImTest,Scales,WinPlsa);
+    [XFeatures,CoordIMG] = NoiseletsFeatures(ImTest,Scales,WinPlsa);
     allFeatures = [allFeatures;XFeatures];
 %    allLabels = [allLabels;imLabels];    
 end    
@@ -168,7 +168,7 @@ for Lo = 1:length(ListImgsTrain)
 %    [binary_maskTest,color_maskTest] = xlmToMask(ImgTrainName,FolderXML,FolderIMG);%% Para
   %  dataset Monuseg
     % ImGroundT = binary_maskTest>0;
-      [labelsAll,histograms] = NoiseletsPLSAHistogramImg_overlap(ImTrain,Scales,WinPlsa,ImGroundT,vocab);
+      [labelsAll,histograms] = NoiseletsPLSAHistogramImg(ImTrain,Scales,WinPlsa,ImGroundT,vocab);
        histo_img = [histo_img;histograms];
        labels_img = [labels_img;labelsAll];
        
@@ -231,7 +231,7 @@ toc
 %% 
    tic
   try
-  [labelsAll,histograms,ImEnhance,ImNormNoiselet] = NoiseletsPLSAHistogramImg_overlap(ImTest,Scales,WinPlsa,ImGroundT,vocab,ClassModel);
+  [labelsAll,histograms,ImEnhance,ImNormNoiselet] = NoiseletsPLSAHistogramImg(ImTest,Scales,WinPlsa,ImGroundT,vocab,ClassModel);
          %%%% SACAR RESULTADOS GENERALES DE LA CLASSIFICACION
 
         %% Evaluate SVM
