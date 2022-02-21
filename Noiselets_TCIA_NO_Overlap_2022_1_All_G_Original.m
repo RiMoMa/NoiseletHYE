@@ -344,7 +344,7 @@ toc
     'Resultados_FscoreD_OriginalImg',...,
     'Resultados_FscoreD_Only_method')
     
-if Expe==13
+if Expe==20
     ImBorde = imoverlay(ImTest,boundarymask(or(MaskOriginal,MaskEvaluate)));    
     imwrite(ImBorde,[FolderImgsSumado,ListIMGALL(Lo).name(1:end-4),'.png' ]);
    
@@ -357,8 +357,8 @@ if Expe==13
 
     
     %%%%% Imagen sin ruido
-%  imwrite(ImEnhance,[FolderImgsSinRuido,ImgTestS,'.png' ]);
-   
+  imwrite(ImEnhance,[FolderImgsSinRuido,ImgTestS,'.png' ]);
+end
  
     
   histo_img = [histo_img;histograms];
