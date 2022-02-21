@@ -45,6 +45,8 @@ clasesMonu=unique([ListOfImgCases{:,2}]);%sacar las clases del dataset
       
       
 for ClassExp = 2 %realizar experimento por clase
+imageForExperiment=[];
+    
 SelClass = clasesMonu(ClassExp)    ;
 fprintf('Evaluating for %s tissue\n',SelClass)
 count=0;
@@ -66,6 +68,10 @@ count=0;
     Resultados_Only_method = cell(length(ExperimentosNoiselets),length(imageForExperiment)*2);
 
     %%%%%%%%%%%%%
+
+
+
+    
     
     
     %%%%% LEAVE ONE OUT VALIDATION SCHEME %%%%
