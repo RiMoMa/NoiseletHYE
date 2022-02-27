@@ -20,9 +20,9 @@ addpath('nuclei_seg/veta_watershed/')
 
 %%%%%%%%% Folder Results %%%%%%%%
 %FolderResults =     '/home/ricardo/Documents/Doctorado/NucleosMTC/ResultsTCIA_Norm_2022/'; %folder Out
-FolderResults =     '/mnt/storage/ramoncayomar/ResultsNoiselets_Original_Complete_noOverlap/'; %folder Out
+FolderResults =     '/mnt/storage/ramoncayomar/ResultsNoiselets_Original_Complete_noOverlap_2602/'; %folder Out
 mkdir(FolderResults)
-copyfile('MatrizExperimentos3.mat',FolderResults)
+copyfile('MatrizExperimentosSVM_2022.mat',FolderResults)
 FolderImgsMethod = [FolderResults,'ImgsMethodRed2/']; % imgs H&E without noise
 mkdir(FolderImgsMethod);
 FolderImgsOriginal = [FolderResults,'ImgsOriginalRed2/']; %% make a copy of the data
@@ -52,7 +52,7 @@ ListOfImgCases = DetailData;
 clasesMonu=unique([ListOfImgCases{:,2}]);%sacar las clases del dataset
 
 %%%%%%%OPTIONS
-load([FolderResults,'MatrizExperimentosSVM.mat'])%% archivo que contiene los parametros experimentales
+load([FolderResults,'MatrizExperimentosSVM_2022.mat'])%% archivo que contiene los parametros experimentales
       
       
 for ClassExp = 12%:length(clasesMonu) %realizar experimento por clase
@@ -118,7 +118,7 @@ for ClassExp = 12%:length(clasesMonu) %realizar experimento por clase
 
 
 
-    for Expe = 1:16%6
+    for Expe = 1:length(ExperimentosNoiselets)%16%6
         % Load parameters for each experiment
         Scales = [ExperimentosNoiselets{Expe,2}];
         WinPlsa = ExperimentosNoiselets{Expe,3};
