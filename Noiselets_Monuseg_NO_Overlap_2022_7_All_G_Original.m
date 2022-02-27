@@ -353,7 +353,7 @@ toc
     
 if Expe==20
     ImBorde = imoverlay(ImTest,boundarymask(or(MaskOriginal,MaskEvaluate)));    
-    imwrite(ImBorde,[FolderImgsSumado,ListIMGALL(Lo).name(1:end-4),'.png' ]);
+    imwrite(ImBorde,[FolderImgsSumado,ImgTestS,'.png' ]);
    
    
    

@@ -61,7 +61,7 @@ clasesMonu=unique([ListOfImgCases{:,2}]);%sacar las clases del dataset
 load([FolderResults,'MatrizExperimentosSVM_2022.mat'])%% archivo que contiene los parametros experimentales
       
       
-for ClassExp = 9%:length(clasesMonu) %realizar experimento por clase
+for ClassExp = 10%:length(clasesMonu) %realizar experimento por clase
     imageForExperiment={};
 
     SelClass = clasesMonu(ClassExp) ;
@@ -353,7 +353,7 @@ toc
     
 if Expe==20
     ImBorde = imoverlay(ImTest,boundarymask(or(MaskOriginal,MaskEvaluate)));    
-    imwrite(ImBorde,[FolderImgsSumado,ListIMGALL(Lo).name(1:end-4),'.png' ]);
+    imwrite(ImBorde,[FolderImgsSumado,ImgTestS,'.png' ]);
    
    
    
