@@ -211,21 +211,22 @@ for Lo = 1:length(TestImg) %%% this for is always 1, a cicle for her would be us
     fprintf('%s\n',ImgTestS) 
     ImTest = imread([FolderTesting,ImgTestS,'.tif']);
     fprintf('Mejorando Imagen\n') 
-    MaskName = [FolderMasksTest,ImgTestS,'.png'];
+    MaskName = [FolderMasksTest,ImgTestS,'.mat'];
         %% abrir mascara manual para generar etiquetas
 tic
     if ~exist(MaskName)
         fprintf('generating image \n')
     %ImGroundTE = imread([FolderTraining,ImgTestS,'_labeled_mask_corrected.png']);
   %  ImGroundT = ImGroundTE >0; 
-        [ImGroundT,color_mask]=xlmToMask(ImgTestS,FolderXML,FolderTesting);
+        [ImGroundTE,color_mask]=xlmToMask(ImgTestS,FolderXML,FolderTesting);
     
-    imwrite(ImGroundT,MaskName)
+    save(MaskName,'ImGroundTE')
     
     else
-       ImGroundTE = imread(MaskName);       
-       ImGroundT = ImGroundTE >0; 
+       ImGroundTE = load(MaskName).ImGroundTE;       
+        
     end
+    ImGroundT = ImGroundTE >0;
     ImManualMask=ImGroundT;
 toc
   % [binary_maskTest,color_maskTest] =
@@ -310,32 +311,32 @@ toc
 
        %%%% PRECISION DETECTION PER CASE
     Resultados_PrecisionD_SumadoImg{Expe,2*AccumTest-1} = ImgTestS;
-    Resultados_PrecisionD_SumadoImg{Expe,AccumTest*2} = Precision_S(3);
+    Resultados_PrecisionD_SumadoImg{Expe,AccumTest*2} = Precision_S(4);
     
     Resultados_PrecisionD_OriginalImg{Expe,2*AccumTest-1} = ImgTestS;
-    Resultados_PrecisionD_OriginalImg{Expe,AccumTest*2} = Precision_O(3);
+    Resultados_PrecisionD_OriginalImg{Expe,AccumTest*2} = Precision_O(4);
     
     Resultados_PrecisionD_Only_method{Expe,2*AccumTest-1} = ImgTestS;
-    Resultados_PrecisionD_Only_method{Expe,AccumTest*2} = Precision_M(3);
+    Resultados_PrecisionD_Only_method{Expe,AccumTest*2} = Precision_M(4);
         
     %%%% RECALL DETECTION PER CASE    
     Resultados_RecallD_SumadoImg{Expe,2*AccumTest-1} = ImgTestS;
-    Resultados_RecallD_SumadoImg{Expe,AccumTest*2} = Recall_S(3);
+    Resultados_RecallD_SumadoImg{Expe,AccumTest*2} = Recall_S(4);
     
     Resultados_RecallD_OriginalImg{Expe,2*AccumTest-1} = ImgTestS;
-    Resultados_RecallD_OriginalImg{Expe,AccumTest*2} = Recall_O(3);
+    Resultados_RecallD_OriginalImg{Expe,AccumTest*2} = Recall_O(4);
     
     Resultados_RecallD_Only_method{Expe,2*AccumTest-1} = ImgTestS;
-    Resultados_RecallD_Only_method{Expe,AccumTest*2} = Recall_M(3);
+    Resultados_RecallD_Only_method{Expe,AccumTest*2} = Recall_M(4);
     %%%% FSCORE DETECTION PER CASE    
     Resultados_FscoreD_SumadoImg{Expe,2*AccumTest-1} = ImgTestS;
-    Resultados_FscoreD_SumadoImg{Expe,AccumTest*2} = Fscore_S(3);
+    Resultados_FscoreD_SumadoImg{Expe,AccumTest*2} = Fscore_S(4);
     
     Resultados_FscoreD_OriginalImg{Expe,2*AccumTest-1} = ImgTestS;
-    Resultados_FscoreD_OriginalImg{Expe,AccumTest*2} = Fscore_O(3);
+    Resultados_FscoreD_OriginalImg{Expe,AccumTest*2} = Fscore_O(4);
     
     Resultados_FscoreD_Only_method{Expe,2*AccumTest-1} = ImgTestS;
-    Resultados_FscoreD_Only_method{Expe,AccumTest*2} = Fscore_M(3);
+    Resultados_FscoreD_Only_method{Expe,AccumTest*2} = Fscore_M(4);
      
     
     
