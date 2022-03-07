@@ -222,7 +222,7 @@ tic
     ImManualMask=ImGroundT;
 toc
   % [binary_maskTest,color_maskTest] =
-  % xlmToMask(ListIMGALL(Lo).name(1:end-4),FolderXML,FolderIMG);%% Para
+  % xlmToMask(ImgTestS,FolderXML,FolderIMG);%% Para
   % dataset Monuseg
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   %%%%%%% Removing Noise of the classified histograms%%%%%%%%%%%%
@@ -278,7 +278,7 @@ toc
    %save([FolderResults,'Results_',ResultsName,'Original.mat'],'ResultadosOriginal')    
    
  %  ImBorde = imoverlay(ImTest,boundarymask(MaskOriginal));
-  % imwrite(ImBorde,[FolderImgsOriginal,ListIMGALL(Lo).name(1:end-4),'.png' ]);
+  % imwrite(ImBorde,[FolderImgsOriginal,ImgTestS,'.png' ]);
   
    
    fprintf('Calculando Metricas Suma Metodos\n') 
@@ -346,7 +346,7 @@ toc
     
 if Expe==46
     ImBorde = imoverlay(ImTest,boundarymask(or(MaskOriginal,MaskEvaluate)));    
-    imwrite(ImBorde,[FolderImgsSumado,ListIMGALL(Lo).name(1:end-4),'.png' ]);
+    imwrite(ImBorde,[FolderImgsSumado,ImgTestS,'.png' ]);
    
    
    
