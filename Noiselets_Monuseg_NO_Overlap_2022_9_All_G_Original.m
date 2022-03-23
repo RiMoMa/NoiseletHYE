@@ -4,7 +4,7 @@
 %@author M.Sc. Ricardo Moncayo <ramoncayomar@unal.edu.co>
 %Ph.D. Eduardo Romero
 %%%%%%%%%%%%
-
+UsedDistance = 'euclidean';
 
 %%%% Libraries %%%%%%%%%%%5
 addpath('/mnt/md0/ricardo/CodesInternship/GITP/')
@@ -160,7 +160,7 @@ end
 
 %%% build the dictionary using kmeans
 
-[idx,vocab] = kmeans(allFeatures,K_clusters,'distance','cityblock');
+[idx,vocab] = kmeans(allFeatures,K_clusters,'distance',UsedDistance);
 %Build histograms and extract labels
 histo_img=[];
 labels_img=[];
@@ -176,7 +176,7 @@ for Lo = 1:length(ListImgsTrain)
    [binary_maskTest,color_maskTest] = xlmToMask(ImgTrainName,FolderXML,FolderIMG);%% Para
   %  dataset Monuseg
      ImGroundT = binary_maskTest>0;
-      [labelsAll,histograms] = NoiseletsPLSAHistogramImg(ImTrain,Scales,WinPlsa,ImGroundT,vocab);
+      [labelsAll,histograms] = NoiseletsPLSAHistogramImg(ImTrain,Scales,WinPlsa,ImGroundT,vocab,[],UsedDistance);
        histo_img = [histo_img;histograms];
        labels_img = [labels_img;labelsAll];
        
@@ -240,7 +240,7 @@ toc
 %% 
    tic
   try
-  [labelsAll,histograms,ImEnhance,ImNormNoiselet] = NoiseletsPLSAHistogramImg(ImTest,Scales,WinPlsa,ImGroundT,vocab,ClassModel);
+  [labelsAll,histograms,ImEnhance,ImNormNoiselet] = NoiseletsPLSAHistogramImg(ImTest,Scales,WinPlsa,ImGroundT,vocab,ClassModel,UsedDistance);
          %%%% SACAR RESULTADOS GENERALES DE LA CLASSIFICACION
 
         %% Evaluate SVM
@@ -353,7 +353,7 @@ toc
     'Resultados_FscoreD_Only_method')
     
 if Expe==20
-%    ImBorde = imoverlay(ImTest,boundarymask(or(MaskOriginal,MaskEvaluate)));    
+    ImBorde = imoverlay(ImTest,boundarymask(or(MaskOriginal,MaskEvaluate)));    
     imwrite(ImBorde,[FolderImgsSumado,ImgTestS,'.png' ]);
    
    
