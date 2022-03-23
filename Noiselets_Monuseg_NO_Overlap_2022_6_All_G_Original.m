@@ -20,7 +20,7 @@ addpath('nuclei_seg/veta_watershed/')
 %%%%%%%%%%%%%%%%%5
 
 %%%%%%%%% Folder Results %%%%%%%%
-FolderResults = '/mnt/md0/ricardo/NoiseletProject/ResultsNoiselets_Original_Complete_noOverlap_Monuseg/'; %folder Out'
+FolderResults = '/mnt/md0/ricardo/NoiseletProject/ResultsNoiselets_Original_Complete_noOverlap_Monuseg_euclidean/'; %folder Out'
 %FolderResults =     '/home/ricardo/Documents/Doctorado/ResultsNoiselets_Original_Complete_noOverlap_Monuseg/'; %folder Out
 %FolderResults =     '/mnt/storage/ramoncayomar/ResultsNoiselets_Original_Complete_noOverlap_Monuseg/'; %folder Out
 mkdir(FolderResults)
