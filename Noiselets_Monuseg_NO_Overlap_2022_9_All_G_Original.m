@@ -353,12 +353,12 @@ toc
     'Resultados_FscoreD_Only_method')
     
 if Expe==20
-    ImBorde = imoverlay(ImTest,boundarymask(or(MaskOriginal,MaskEvaluate)));    
+%    ImBorde = imoverlay(ImTest,boundarymask(or(MaskOriginal,MaskEvaluate)));    
     imwrite(ImBorde,[FolderImgsSumado,ImgTestS,'.png' ]);
    
    
    
-    Imagen borde nucleos detectados en la original
+%    Imagen borde nucleos detectados en la original
     ImBorde = imoverlay(ImTest,boundarymask(MaskOriginal));
     imwrite(ImBorde,[FolderImgsOriginal,ImgTestS,'.png' ]);
 
