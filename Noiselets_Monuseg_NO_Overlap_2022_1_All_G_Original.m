@@ -4,7 +4,7 @@
 %@author M.Sc. Ricardo Moncayo <ramoncayomar@unal.edu.co>
 %Ph.D. Eduardo Romero
 %%%%%%%%%%%%
-UsedDistance = 'euclidean';
+UsedDistance = 'sqeuclidean';
 
 %%%% Libraries %%%%%%%%%%%5
 addpath('/mnt/md0/ricardo/CodesInternship/GITP/')
