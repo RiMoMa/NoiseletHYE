@@ -350,7 +350,7 @@ if Expe==46
    
    
    
-    Imagen borde nucleos detectados en la original
+%Imagen borde nucleos detectados en la original
     ImBorde = imoverlay(ImTest,boundarymask(MaskOriginal));
     imwrite(ImBorde,[FolderImgsOriginal,ImgTestS,'.png' ]);
 
