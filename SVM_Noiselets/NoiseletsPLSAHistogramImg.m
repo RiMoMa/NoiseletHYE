@@ -1,4 +1,4 @@
-function [labelsAll,histograms,im,Inm] = NoiseletsPLSAHistogramImg(im,Scales,WinPlsa,GroundT,vocab,ClassModel)
+function [labelsAll,histograms,im,Inm] = NoiseletsPLSAHistogramImg(im,Scales,WinPlsa,GroundT,vocab,ClassModel,UsedDistance)
 %%%%%%%%%%%% Obtain histograms of an image by using and vocabulary and if
 %%%%%%%%%%%% classifier is avalaible claffified histograms
 
@@ -63,7 +63,7 @@ addpath('FNT')
     XFeatures = X;
 
     
-        [~,idx] = pdist2(vocab,XFeatures,'cityblock','Smallest',1);
+        [~,idx] = pdist2(vocab,XFeatures,UsedDistance,'Smallest',1);
 
   
        
