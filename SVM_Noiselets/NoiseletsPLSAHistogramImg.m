@@ -112,7 +112,7 @@ addpath('FNT')
 
 
 
-if exist('ClassModel')
+if exist('ClassModel') & ~isempty(ClassModel)
            lienzo2 =zeros(size(lienzo));
 
     LabelsHisto = predict(ClassModel,histograms);
