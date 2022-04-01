@@ -45,23 +45,8 @@ for win_size = Scales
     
     %%% Extract Noiselets from tiles
     [pila_patches_orig,coords,lienzo,pila_patches_gray] = ExtractTilesAndNoiselets(win_size,ime,aa,bb);
-    %Rigth shift
-    ime_c = zeros(size(ime));
-    ime_c(win_size/2:end,:) = ime(win_size/2:end,:);
-    [pila_patches_orig,coords,lienzo,pila_patches_gray] = ExtractTilesAndNoiselets(win_size,ime_c,aa,bb);
+
     
-    %Down shift
-    ime_c = zeros(size(ime));
-    ime_c(:,win_size/2:end) = ime(:,win_size/2:end);
-    [pila_patches_orig,coords,lienzo,pila_patches_gray] = ExtractTilesAndNoiselets(win_size,ime_c,aa,bb);
-    % right and down
-    
-    ime_c = zeros(size(ime));
-    ime_c(win_size/2:end,win_size/2:end) = ime(win_size/2:end,win_size/2:end);
-    [pila_patches_orig,coords,lienzo,pila_patches_gray] = ExtractTilesAndNoiselets(win_size,ime_c,aa,bb);
-    
-        
-        
     abs_pila = real(pila_patches_orig); %Se saca la Magnitud
     angle_pila = imag(pila_patches_orig); %SE SACA EL ANGULO, se le su
 
