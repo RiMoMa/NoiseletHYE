@@ -1,4 +1,4 @@
-function Y = fnt2d_scales(X)
+function [Y,yout] = fnt2d_scales(X)
 % Fast 2-D Noiselet Transform
 %
 % Description :
@@ -25,4 +25,13 @@ function Y = fnt2d_scales(X)
 %          http://www.mathworks.com/matlabcentral/fileexchange/loadFile.do?objectId=6882
 % * R. Coifman, F. Geshwind, and Y. Meyer. Noiselets. Appl. Comput. Harmon. Anal., 10(1):27--44, 2001.
 
-Y = fnt1d(fnt1d(X).').';
+
+    N = size(X, 1);
+
+ndigit = floor(log2(N));
+yout=[];
+for i=1:ndigit
+  Y = fnt1d_scales(fnt1d_scales(X,i).',i).';
+  yout=[yout;Y(:)];
+
+end
