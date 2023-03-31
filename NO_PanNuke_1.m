@@ -4,27 +4,18 @@
 %@author M.Sc. Ricardo Moncayo <ramoncayomar@unal.edu.co>
 %Ph.D. Eduardo Romero
 %%%%%%%%%%%%
-UsedDistance = 'cosine';
+clear all
+UsedDistance = 'cityblock';
 
-%%%% Libraries %%%%%%%%%%%5
-addpath('/mnt/md0/ricardo/CodesInternship/GITP/')
-%addpath('/mnt/storage/ramoncayomar/Codes/CodesInternship/GITP/')
-%addpath('/home/ricardo/Documents/Doctorado/SYNC/all_codes/CodesInternship/GITP/')
-
-addpath('nuclei_seg/staining_normalization/')
-addpath('SVM_Noiselets/')
-addpath('FNT')
-addpath('PLSA_TEM_EM/')
-addpath('nuclei_seg')
-addpath('nuclei_seg/veta_watershed/')
-%%%%%%%%%%%%%%%%%5
 
 %%%%%%%%% Folder Results %%%%%%%%
-FolderResults = '/mnt/md0/ricardo/NoiseletProject/ResultsNoiselets_Original_Complete_noOverlap_Monuseg_euclidean/'; %folder Out'
+%FolderResults = '/mnt/md0/ricardo/NoiseletProject/ResultsNoiselets_Original_Complete_noOverlap_Monuseg_euclidean/'; %folder Out'
 %FolderResults =     '/home/ricardo/Documents/Doctorado/ResultsNoiselets_Original_Complete_noOverlap_Monuseg/'; %folder Out
-%FolderResults =     '/mnt/storage/ramoncayomar/ResultsNoiselets_Original_Complete_noOverlap_Monuseg/'; %folder Out
+
+FolderResults = '/mnt/storage/ramoncayomar/ResultsNoiselets_Original_Complete_noOverlap_PanNuke/'; %folder Out
 mkdir(FolderResults)
 copyfile('MatrizExperimentosSVM_2022.mat',FolderResults)
+
 FolderImgsMethod = [FolderResults,'ImgsMethodRed2/']; % imgs H&E without noise
 mkdir(FolderImgsMethod);
 FolderImgsOriginal = [FolderResults,'ImgsOriginalRed2/']; %% make a copy of the data
@@ -39,20 +30,33 @@ mkdir(FolderImgsGroundTruth);
 
 
 
+%%%% Libraries %%%%%%%%%%%5
+%addpath('/mnt/md0/ricardo/CodesInternship/GITP/')
+addpath('/mnt/storage/ramoncayomar/Codes/CodesInternship/GITP/')
+%addpath('/home/ricardo/Documents/Doctorado/SYNC/all_codes/CodesInternship/GITP/')
+addpath('nuclei_seg/staining_normalization/')
+addpath('SVM_Noiselets/')
+addpath('FNT')
+addpath('PLSA_TEM_EM/')
+addpath('nuclei_seg')
+addpath('nuclei_seg/veta_watershed/')
+%%%%%%%%%%%%%%%%%5
+
+
+
 %%% Dataset Dir %%%
 %FolderIMG = '/mnt/md0/Histopathology/Datasets/TCIA/';
 %FolderIMG = '/mnt/storage/ramoncayomar/Datasets/TCIA/';   
 %FolderIMG = '/home/ricardo/Documents/Doctorado/DatasetTCIA_NORM/';
 %FolderXML =
 %'/mnt/md0/Histopathology/Datasets/DatasetMonusegC/Annotations/'; %this is for monuseg dataset
-FolderIMG = '/mnt/md0/Histopathology/Datasets/DatasetMonusegC/Tissue_images/';
-FolderXML = '/mnt/md0/Histopathology/Datasets/DatasetMonusegC/Annotations/';
 
-
+FolderIMG = '/mnt/storage/ramoncayomar/Datasets/PanNuke_Dataset/';
+FolderXML = '/mnt/storage/ramoncayomar/Datasets/PanNuke_Dataset/';
 FolderMasksTest = [FolderIMG,'Masks/'];
 FolderTraining = FolderIMG;
-FolderTesting = FolderIMG; %change for future datasets
-load('ListImgsMonuseg.mat')
+FolderTesting = '/mnt/storage/ramoncayomar/Datasets/PanNuke_Dataset/Fold2/DatasetImgs/'; %change for future datasets
+load('ListImgsPanNuke.mat')
 %ListOfImgCases = DetailData; %TCIA ONLY
 
 clasesMonu=unique([ListOfImgCases{:,2}]);%sacar las clases del dataset
@@ -61,20 +65,35 @@ clasesMonu=unique([ListOfImgCases{:,2}]);%sacar las clases del dataset
 load([FolderResults,'MatrizExperimentosSVM_2022.mat'])%% archivo que contiene los parametros experimentales
       
       
-for ClassExp = 8%:length(clasesMonu) %realizar experimento por clase
-
+for ClassExp = 1%:length(clasesMonu) %realizar experimento por clase
     imageForExperiment={};
     SelClass = clasesMonu(ClassExp) ;
     fprintf('Evaluating for %s tissue\n',SelClass)
-    count=0; 
+    Variable_Data_arragment = strcat(FolderResults,'Data_Array_',SelClass,'.mat');
     
-    for rn = 1:length(ListOfImgCases)%take out list per tissue selection
-       ItClass = ListOfImgCases{rn,2}==SelClass; % logical existence of a determine class    
+    FoldExperiment =[];
+    imageForExperiment_Masks={};
+	if ~exist(Variable_Data_arragment,'file')  
+        count=0; 
+     for rn = 1:length(ListOfImgCases)%take out list per tissue selection
+       ItClass = ListOfImgCases{rn,2}==SelClass; % logical existence of a determine class
+       
        if ItClass
           count=count+1; 
-          imageForExperiment{count} = ListOfImgCases{rn,1} ;
+          imageForExperiment{count} = ListOfImgCases{rn,3} ;
+          FoldExperiment(count) = ListOfImgCases{rn,4} ;
+          imageForExperiment_Masks{count}=ListOfImgCases{rn,5} ;
        end
-    end
+     end
+        save(Variable_Data_arragment,'FoldExperiment','imageForExperiment_Masks','imageForExperiment')
+    else 
+        
+        load(Variable_Data_arragment)
+   end
+    
+    
+    
+
 
            
     %%%% Save Results
@@ -95,87 +114,124 @@ for ClassExp = 8%:length(clasesMonu) %realizar experimento por clase
     Resultados_FscoreD_SumadoImg = cell(length(ExperimentosNoiselets),length(imageForExperiment)*2);
     Resultados_FscoreD_OriginalImg = cell(length(ExperimentosNoiselets),length(imageForExperiment)*2);
     Resultados_FscoreD_Only_method = cell(length(ExperimentosNoiselets),length(imageForExperiment)*2);
+
     
-    
-    %%%%%%%%%%%%% K-Fold Partition
-    %%% 1. Randomize Images
-    %%% 2. Determine number of train and test Images
-    KFold = 10;
-    idxForExperiment = 1:length(imageForExperiment);
-    cv = cvpartition(idxForExperiment,'leaveout');
-    %cv = cvpartition(imageForExperiment,'Holdout',0.3)
-    %%% 3. Make data partion
-    
-    
-    %%%%% K FOLD VALIDATION SCHEME %%%%
-    
-    AccumTest=0; %This variable is employed to count evaluated images and then create the matrix of results dependend of the kfold and the number of test images   
-    
-    for OneOut = 1:cv.NumTestSets
+
+for Expe = 1:length(ExperimentosNoiselets)
+    % Load parameters for each experiment
+    Scales = [ExperimentosNoiselets{Expe,2}];
+    WinPlsa = ExperimentosNoiselets{Expe,3};
+    ResultsName = ExperimentosNoiselets{Expe,1}{1};
+    K_clusters =ExperimentosNoiselets{Expe,4};
+    fprintf('Testing: %s \n',ResultsName)  
+    ExpeName = strcat('_case_',SelClass,'_Exp_',num2str(Expe));
+    ExpeName2 = strcat('_case_',SelClass,'_Scale_',num2str(Scales),'_WinPlsa_',num2str(WinPlsa));
+    ExpeName2b = strcat('_case_',SelClass,'_Scale_',num2str(Scales));
+    ExpeName3 = strcat('_case_',SelClass,'_Scale_',num2str(Scales),'_WinPlsa_',num2str(WinPlsa),'_clusters_',num2str(K_clusters));
         
-       TestImg = imageForExperiment(cv.test(OneOut));
-       
-       idxTraining = cv.training(OneOut);
-       ImgsTraining = imageForExperiment(idxTraining);
-       
-       %%%%%%% Training %%%%%%%%%
+    AccumTest=0; 
+    
+    for OneOut = 1:3
+
+        if OneOut == 1
+            TrainIdx = FoldExperiment==1;
+            TestIdx = FoldExperiment==2;
+        elseif OneOut==2
+            TrainIdx = FoldExperiment==2;
+            TestIdx = FoldExperiment==1;
+        elseif OneOut == 3
+            TrainIdx = FoldExperiment==3;
+            TestIdx = FoldExperiment==2;
+        end
+
+       TestImg = imageForExperiment(TestIdx);
+       ImgsTraining = imageForExperiment(TrainIdx);
+              %%%%%%% Training %%%%%%%%%
        ListIMGALLT = ImgsTraining; %just a change of variable
        ListImgsTrain = ListIMGALLT;
+       ListImgsTrainMask=imageForExperiment_Masks(TrainIdx);
+       ListImgsTestMask=imageForExperiment_Masks(TestIdx);
 
+       Variable_Vocab_cases = strcat(FolderResults,'VocabList_',ExpeName2,'_Fold_',num2str(OneOut),'.mat');
+        if ~exist(Variable_Vocab_cases,'file')
+         % VocabCases = randperm(length(ListIMGALLT),round(length(ListIMGALLT)*0.4));
+            VocabCases = randperm(length(ListIMGALLT),length(ListIMGALLT));
+            save(Variable_Vocab_cases,'VocabCases')
+       else
+           load(Variable_Vocab_cases)
+       end
 
-
-    for Expe = 1:length(ExperimentosNoiselets)
-        % Load parameters for each experiment
-        Scales = [ExperimentosNoiselets{Expe,2}];
-        WinPlsa = ExperimentosNoiselets{Expe,3};
-        ResultsName = ExperimentosNoiselets{Expe,1}{1};
-        K_clusters =ExperimentosNoiselets{Expe,4};
-        fprintf('Testing: %s \n',ResultsName)
-
-
-    %%% testing 
 
     %% Feature Extration For dictionary Building
     allFeatures = [];
     allLabels = [];
-
-  %  VocabCases = randperm(length(ListIMGALLT),round(length(ListIMGALLT)*0.4));
-    VocabCases = randperm(length(ListIMGALLT),length(ListIMGALLT));
-
     ListIMGALL = ListIMGALLT(VocabCases);
-%%% VOCABULARY FEATURE EXTRACTION
+    
 for Lo = 1:length(ListIMGALL)
+    ImageName = num2str(ListIMGALL{Lo});
     fprintf('AbriendoImagen\n') 
-    fprintf('%s\n',ListIMGALL{Lo})
-    ImTest = imread([FolderTraining,num2str(ListIMGALL{Lo}),'.tif']);
+    fprintf('%s\n',ImageName)
+    PathCoefficients = strcat(FolderCoefficients ,ImageName, ExpeName2b,'.mat');
+     if ~exist(PathCoefficients)
+         ImTest = imread(strcat(FolderIMG,ListIMGALL{Lo}));
     fprintf('Mejorando Imagen\n') 
  %ToDo: COncatenate img features
-    [XFeatures,CoordIMG] = NoiseletsFeatures(ImTest,Scales,WinPlsa);
+    [XFeatures,CoordIMG] = NoiseletsFeatures(ImTest,Scales);
+    save(PathCoefficients,'XFeatures')
+    else
+        load(PathCoefficients)
+    end    
+    
+    
     allFeatures = [allFeatures;XFeatures];
 %    allLabels = [allLabels;imLabels];    
 end    
 
 
 
-%%% build the dictionary using kmeans
-
-[idx,vocab] = kmeans(allFeatures,K_clusters,'distance',UsedDistance);
+%% build the dictionary using kmeans
+    NameVocab = strcat(FolderCoefficients,'Vocab_',ExpeName,'_Fold_',num2str(OneOut),'.mat');
+    if ~exist(NameVocab,'file')
+        [idx,vocab] = kmeans(allFeatures,K_clusters,'distance',UsedDistance);
+        save(NameVocab,'vocab','idx')
+    else
+        load(NameVocab)
+    end        
+               
+        
 %Build histograms and extract labels
 histo_img=[];
 labels_img=[];
+
 for Lo = 1:length(ListImgsTrain)
-    ImgTrainName = num2str(ListImgsTrain{Lo});
+    ImagePath = strcat(FolderIMG,ListImgsTrain{Lo});
+    ImgTrainName =ImagePath;
+    ImgTrainNameMask = num2str(strcat(FolderIMG,ListImgsTrainMask{Lo}));
+    
     fprintf('AbriendoImagen\n') 
     fprintf('%s\n',ImgTrainName) 
     
-    ImTrain = imread([FolderTraining,ImgTrainName,'.tif']);%Todo: Check
-    fprintf('Mejorando Imagen\n') 
+    ImTrain = imread(ImgTrainName);%Todo: Check
+    fprintf('Mejorando Imagen\n')
+    
+    MaskName = [FolderMasksTest,ImgTrainName,'.mat'];
+    if ~exist(MaskName,'file')
   %% abrir mascara manual para generar etiquetas
-  % ImGroundT = imread([FolderTraining,ImgTrainName,'_labeled_mask_corrected.png'])>0;
-   [binary_maskTest,color_maskTest] = xlmToMask(ImgTrainName,FolderXML,FolderIMG);%% Para
+   ImGroundTE = imread(ImgTrainNameMask);
+   save(MaskName,'ImGroundTE')
+    else
+       ImGroundTE = load(MaskName).ImGroundTE;       
+        
+    end
   %  dataset Monuseg
-     ImGroundT = binary_maskTest>0;
-      [labelsAll,histograms] = NoiseletsPLSAHistogramImg(ImTrain,Scales,WinPlsa,ImGroundT,vocab,[],UsedDistance);
+    ImGroundT = ImGroundTE>0;
+    PathTrainHistImg = strcat(FolderHistogramsTrain,ImgTrainName,'HistoExp_',ExpeName,'_Fold_',num2str(OneOut),'.mat');
+     if ~exist(PathTrainHistImg,'file')
+         [labelsAll,histograms] = NoiseletsPLSAHistogramImg(ImTrain,Scales,WinPlsa,ImGroundT,vocab,[],UsedDistance);
+         save(PathTrainHistImg,'labelsAll','histograms')
+     else
+         load(PathTrainHistImg)
+     end
        histo_img = [histo_img;histograms];
        labels_img = [labels_img;labelsAll];
        
@@ -206,40 +262,40 @@ labels_imgTest=[];
 for Lo = 1:length(TestImg) %%% this for is always 1, a cicle for her would be used to K-fold validation
     AccumTest = AccumTest+1;
     fprintf('AbriendoImagen\n') 
-    ImgTestS = num2str(TestImg{Lo});
+    ImgTestS = strcat(FolderIMG, TestImg{Lo});
     fprintf('%s\n',ImgTestS) 
-    ImTest = imread([FolderTesting,ImgTestS,'.tif']);
+    ImTest = imread(ImgTestS);
     fprintf('Mejorando Imagen\n') 
     MaskName = [FolderMasksTest,ImgTestS,'.mat'];
-        %% abrir mascara manual para generar etiquetas
-tic
-    if ~exist(MaskName)
+    
+    if ~exist(MaskName,'file')
         fprintf('generating image \n')
-    %ImGroundTE = imread([FolderTraining,ImgTestS,'_labeled_mask_corrected.png']);
-  %  ImGroundT = ImGroundTE >0; 
-        [ImGroundTE,color_mask]=xlmToMask(ImgTestS,FolderXML,FolderTesting);
-    
-    save(MaskName,'ImGroundTE')
-    
+        
+        
+        ImGroundTE = imread(strcat(FolderIMG,ListImgsTestMask{Lo}));
+        save(MaskName,'ImGroundTE')
     else
        ImGroundTE = load(MaskName).ImGroundTE;       
         
     end
-    ImGroundT = ImGroundTE >0;
-    ImManualMask=ImGroundT;
-toc
-  % [binary_maskTest,color_maskTest] =
-  % xlmToMask(ListIMGALL(Lo).name(1:end-4),FolderXML,FolderIMG);%% Para
-  % dataset Monuseg
+        
+        ImGroundT = ImGroundTE >0;
+        ImManualMask=ImGroundT;
+
+
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   %%%%%%% Removing Noise of the classified histograms%%%%%%%%%%%%
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
          %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
          
-%% 
-   tic
   try
-  [labelsAll,histograms,ImEnhance,ImNormNoiselet] = NoiseletsPLSAHistogramImg(ImTest,Scales,WinPlsa,ImGroundT,vocab,ClassModel,UsedDistance);
+      PathTestHistImg = strcat(FolderHistogramsTest,ImgTestS,'HistoExp_',ExpeName,'_Fold_',num2str(OneOut),'.mat');
+         if ~exist(PathTestHistImg,'file')
+             [labelsAll,histograms,ImEnhance,ImNormNoiselet] = NoiseletsPLSAHistogramImg(ImTest,Scales,WinPlsa,ImGroundT,vocab,ClassModel,UsedDistance);
+             save(PathTestHistImg,'labelsAll','histograms','ImEnhance','ImNormNoiselet')
+         else
+         load(PathTestHistImg)
+            end
          %%%% SACAR RESULTADOS GENERALES DE LA CLASSIFICACION
 
         %% Evaluate SVM
@@ -352,19 +408,39 @@ toc
     'Resultados_FscoreD_Only_method')
     
 if Expe==20
+    ImgTestS = char(ImgTestS);
+    %find Fold and Creat Folders
+    idxFolder = strfind(ImgTestS,'Fold')
+    AuxName = ImgTestS(idxFolder:end);
+    idxTissue = strfind(AuxName,'/');
+    FolderFold = AuxName(1:length('Foldn'));
+    FolderTissue = AuxName(idxTissue(2):idxTissue(3));
+    AuxImageName = AuxName(idxTissue(3)+1:end);
+
+
+    mkdir(strcat(FolderImgsSumado,FolderFold));
+    mkdir(strcat(FolderImgsSumado,FolderFold,FolderTissue));
+
+    mkdir(strcat(FolderImgsOriginal,FolderFold));
+    mkdir(strcat(FolderImgsOriginal,FolderFold,FolderTissue));
+    mkdir(strcat(FolderImgsSinRuido,FolderFold));
+    mkdir(strcat(FolderImgsSinRuido,FolderFold,FolderTissue));
+
+
+
     ImBorde = imoverlay(ImTest,boundarymask(or(MaskOriginal,MaskEvaluate)));    
-    imwrite(ImBorde,[FolderImgsSumado,ImgTestS,'.png' ]);
+    imwrite(ImBorde,strcat(FolderImgsSumado,FolderFold,FolderTissue,AuxImageName) );
    
    
    
 %    Imagen borde nucleos detectados en la original
     ImBorde = imoverlay(ImTest,boundarymask(MaskOriginal));
-    imwrite(ImBorde,[FolderImgsOriginal,ImgTestS,'.png' ]);
+    imwrite(ImBorde,strcat(FolderImgsOriginal,FolderFold,FolderTissue,AuxImageName));
 
 
     
     %%%%% Imagen sin ruido
-  imwrite(ImEnhance,[FolderImgsSinRuido,ImgTestS,'.png' ]);
+  imwrite(ImEnhance,strcat(FolderImgsSinRuido,FolderFold,FolderTissue,AuxImageName));
 end
  
     

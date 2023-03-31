@@ -6,7 +6,7 @@
 %%%%%%%%%%%%
 UsedDistance = 'cosine';
 
-%%%% Libraries %%%%%%%%%%%5
+%%%% Libraries %%%%%%%%%%%
 addpath('/mnt/md0/ricardo/CodesInternship/GITP/')
 %addpath('/mnt/storage/ramoncayomar/Codes/CodesInternship/GITP/')
 %addpath('/home/ricardo/Documents/Doctorado/SYNC/all_codes/CodesInternship/GITP/')
